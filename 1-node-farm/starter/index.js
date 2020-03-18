@@ -1,7 +1,7 @@
 // functions to save and read data from system
-const fs = require('fs');
-const http = require('http');
-const url = require('url');
+import { readFileSync } from 'fs';
+import { createServer } from 'http';
+import url from 'url';
 // const url = require('url');
 
 // Blocking, synchronous way
@@ -46,43 +46,43 @@ const replaceTemplate = (temp, product) => {
 
     if (!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
     return output;
-  
-};
-const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
-const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
-const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
 
-const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+};
+const tempOverview = readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
+const tempCard = readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
+const tempProduct = readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
+
+const data = readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data);
 //console.log(dataObj)
-    // res.writeHead(200, {
-    //     'Content-type': 'application/json'
-    // });
-    // res.end(data);
+// res.writeHead(200, {
+//     'Content-type': 'application/json'
+// });
+// res.end(data);
 
 
-const server = http.createServer((req, res) => {
+const server = createServer((req, res) => {
     const pathName = req.url;
 
     // Overview page
-    if(pathName === '/' || pathName === '/overview') {
+    if (pathName === '/' || pathName === '/overview') {
 
-        res.writeHead(200, {'Content-type': 'text/html'});
+        res.writeHead(200, { 'Content-type': 'text/html' });
         const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('');
         const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
         res.end(output)
 
-    // Product page
+        // Product page
     } else if (pathName === '/product') {
         res.end('this is the PRODUCT')
 
-    // API
-    }else if(pathName === '/api'){
-        res.writeHead(200, {'Content-type': 'application/json'});
+        // API
+    } else if (pathName === '/api') {
+        res.writeHead(200, { 'Content-type': 'application/json' });
         res.end(data);
 
-    // Not found
-    }else{
+        // Not found
+    } else {
         res.writeHead(404, {
             'Content-type': 'text/html',
             'my-own-header': 'hello-world'
