@@ -1,8 +1,10 @@
 // functions to save and read data from system
-import { readFileSync } from 'fs';
-import { createServer } from 'http';
-import url from 'url';
-// const url = require('url');
+
+const fs = require('fs');
+const http = require('http');
+const url = require('url');
+const host = '127.0.0.1';
+const port = 8000;
 
 // Blocking, synchronous way
 // const textIn = fs.readFileSync('./txt/input.txt', 'utf-8')
@@ -48,11 +50,11 @@ const replaceTemplate = (temp, product) => {
     return output;
 
 };
-const tempOverview = readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
-const tempCard = readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
-const tempProduct = readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
 
-const data = readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data);
 //console.log(dataObj)
 // res.writeHead(200, {
@@ -60,8 +62,11 @@ const dataObj = JSON.parse(data);
 // });
 // res.end(data);
 
-
-const server = createServer((req, res) => {
+/**
+ * @param  {} (req
+ * @param  {} res
+ */
+const server = http.createServer((req, res) => {
     const pathName = req.url;
 
     // Overview page
@@ -92,6 +97,11 @@ const server = createServer((req, res) => {
     //res.end('hello from the server')
 });
 
-server.listen(8000, '127.0.0.1', () => {
-    console.log('listening to requests on port 8000');
+/**
+ * @param  {} port
+ * @param  {} '127.0.0.1 => localhost'
+ * @param  {} (
+ */
+server.listen(`${port}`, `${host}`, () => {
+    console.log(`listening to requests on port ${host}:${port}`);
 })
