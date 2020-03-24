@@ -11,8 +11,8 @@
     "license": "ISC",
     "dependencies": {
         "express": "^4.17.1",
-        "slugify": "^1.4.0",
-        "url-parse": "^1.4.7"
+        "slugify": "~1.4.0",
+        "url-parse": "~1.4.7"
     },
     "devDependencies": {
         "nodemon": "^2.0.2"

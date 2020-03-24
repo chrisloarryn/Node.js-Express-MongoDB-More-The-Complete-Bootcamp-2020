@@ -1,6 +1,5 @@
 {
-    "workbench.colorTheme": "Default Dark+",
-    "files.autoSave": "onFocusChange",
+    "workbench.colorTheme": "Oceanic Next",
     "editor.minimap.enabled": true,
     "workbench.statusBar.visible": true,
     "workbench.activityBar.visible": true,

@@ -1,11 +1,15 @@
 // functions to save and read data from system
 
-const fs = require('fs');
-const http = require('http');
-const url = require('url');
-const host = '127.0.0.1';
-const port = 8000;
-var replaceTemplate = require('./modules/replaceTemplate');
+const fs = require('fs')
+const http = require('http')
+const url = require('url')
+const host = '127.0.0.1'
+const port = 8000
+
+// friendly urls
+const slugify = require('slugify')
+
+let replaceTemplate = require('./modules/replaceTemplate')
 
 // Blocking, synchronous way
 // const textIn = fs.readFileSync('./txt/input.txt', 'utf-8')
@@ -36,24 +40,33 @@ var replaceTemplate = require('./modules/replaceTemplate');
 // Server
 
 ////////////////
-const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
-const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
-const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8')
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8')
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8')
 
-const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
-const dataObj = JSON.parse(data);
-//console.log(dataObj)
-// res.writeHead(200, {
-//     'Content-type': 'application/json'
-// });
-// res.end(data);
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8')
+const dataObj = JSON.parse(data)
+    //console.log(dataObj)
+    // res.writeHead(200, {
+    //     'Content-type': 'application/json'
+    // });
+    // res.end(data);
+
+const slugs = dataObj.map(el =>
+    slugify(el.productName, {
+        lower: true
+    })
+)
+console.log(slugs)
+
+// console.log(slugify(`Fresh Avocados`, { lower: true })) => fresh-avocados
 
 /**
  * @param  {} (req
  * @param  {} res
  */
 const server = http.createServer((req, res) => {
-    const { query, pathname } = url.parse(req.url, true);
+    const { query, pathname } = url.parse(req.url, true)
 
     // console.log(query);
     // console.log(pathname);
@@ -62,27 +75,32 @@ const server = http.createServer((req, res) => {
      * @param  {} pathname==='/'||pathname==='/overview'
      */
     if (pathname === '/' || pathname === '/overview') {
-
-        res.writeHead(200, { 'Content-type': 'text/html' });
-        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('');
-        const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
-        res.end(output);
+        res.writeHead(200, {
+            'Content-type': 'text/html'
+        })
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('')
+        const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml)
+        res.end(output)
 
         /**
          * @param  {} pathname==='/product'
          */
     } else if (pathname === '/product') {
-        res.writeHead(200, { 'Content-type': 'text/html' });
-        const product = dataObj[query.id];
-        const output = replaceTemplate(tempProduct, product);
-        res.end(output);
+        res.writeHead(200, {
+            'Content-type': 'text/html'
+        })
+        const product = dataObj[query.id]
+        const output = replaceTemplate(tempProduct, product)
+        res.end(output)
 
         /**
          * @param  {} pathname==='/api'
          */
     } else if (pathname === '/api') {
-        res.writeHead(200, { 'Content-type': 'application/json' });
-        res.end(data);
+        res.writeHead(200, {
+            'Content-type': 'application/json'
+        })
+        res.end(data)
 
         // Not found
     } else {
@@ -93,7 +111,7 @@ const server = http.createServer((req, res) => {
         res.end('<h1>Page not found!</h1>')
     }
     //res.end('hello from the server')
-});
+})
 
 /**
  * @param  {} port
@@ -101,5 +119,5 @@ const server = http.createServer((req, res) => {
  * @param  {} (
  */
 server.listen(`${port}`, `${host}`, () => {
-    console.log(`listening to requests on port ${host}:${port}`);
+    console.log(`listening to requests on port ${host}:${port}`)
 })
