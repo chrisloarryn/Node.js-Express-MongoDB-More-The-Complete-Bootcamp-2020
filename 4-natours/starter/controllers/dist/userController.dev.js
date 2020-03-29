@@ -8,6 +8,7 @@ var tours = JSON.parse(fs.readFileSync("".concat(__dirname, "/../dev-data/data/t
 exports.getAllUsers = function (req, res) {
   res.status(500).json({
     status: 'error',
+    requestedAt: req.requestTime,
     message: 'This route is not yet defined! 😏'
   });
 };
@@ -15,6 +16,7 @@ exports.getAllUsers = function (req, res) {
 exports.getUser = function (req, res) {
   res.status(500).json({
     status: 'error',
+    requestedAt: req.requestTime,
     message: 'This route is not yet defined! 😏'
   });
 };
@@ -22,6 +24,7 @@ exports.getUser = function (req, res) {
 exports.createUser = function (req, res) {
   res.status(500).json({
     status: 'error',
+    requestedAt: req.requestTime,
     message: 'This route is not yet defined! 😏'
   });
 };
@@ -29,6 +32,7 @@ exports.createUser = function (req, res) {
 exports.updateUser = function (req, res) {
   res.status(500).json({
     status: 'error',
+    requestedAt: req.requestTime,
     message: 'This route is not yet defined! 😏'
   });
 };
@@ -36,6 +40,7 @@ exports.updateUser = function (req, res) {
 exports.deleteUser = function (req, res) {
   res.status(500).json({
     status: 'error',
+    requestedAt: req.requestTime,
     message: 'This route is not yet defined! 😏'
   });
 };

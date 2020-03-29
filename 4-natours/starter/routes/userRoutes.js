@@ -6,10 +6,7 @@ const express = require('express')
 //   updateUser,
 //   deleteUser
 // } = require('./../controllers/userController')
-
 const userController = require('./../controllers/userController')
-
-// 3) ROUTES
 const router = express.Router()
 
 router

@@ -1,0 +1,15 @@
+// Related to express
+const dotenv = require('dotenv')
+const app = require('./app')
+dotenv.config({ path: './config.env' })
+
+
+// console.log(process.env)
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+  console.log(`App running on port ${port}... 😊`)
+})
+
+
+const x = 32323;
+x = 333;

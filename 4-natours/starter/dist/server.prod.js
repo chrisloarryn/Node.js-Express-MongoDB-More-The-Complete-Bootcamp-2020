@@ -1,0 +1,1 @@
+"use strict";var dotenv=require("dotenv"),app=require("./app");dotenv.config({path:"./config.env"});var port=process.env.PORT||3e3;app.listen(port,function(){console.log("App running on port ".concat(port,"... 😊"))});
