@@ -1,0 +1,1 @@
+"use strict";var mongoose=require("mongoose"),tourSchema=new mongoose.Schema({name:{type:String,required:[!0,"A tour must have a name"],unique:!0},rating:{type:Number,default:4.5},price:{type:Number,required:[!0,"A tour must have a price"]}}),Tour=mongoose.model("Tour",tourSchema);module.exports=Tour;
