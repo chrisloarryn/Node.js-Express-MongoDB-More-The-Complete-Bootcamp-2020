@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=development nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js"
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "import": "node dev-data/data/import-dev-data.js --import",
+    "delete": "node dev-data/data/import-dev-data.js --delete",
+    "export": "node dev-data/data/import-dev-data.js --export"
   },
   "author": "chrisloarryn",
   "license": "ISC",

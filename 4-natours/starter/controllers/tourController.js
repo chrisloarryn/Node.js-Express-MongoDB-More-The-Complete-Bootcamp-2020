@@ -4,7 +4,22 @@ const Tour = require('./../models/tourModel')
 // 2) ROUTE HANDLERS
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find()
+    // BUILD QUERY
+    const queryObj = {...req.query}
+    const excludedFields = ['page', 'sort', 'limit', 'fields']
+    excludedFields.forEach(el => delete queryObj[el])
+
+    const query = Tour.find(queryObj)
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)  // .lt(5)
+    //   .where('difficulty')
+    //   .equals('easy')
+
+    // EXECUTE QUERY
+    const tours = await query
+
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -13,7 +28,7 @@ exports.getAllTours = async (req, res) => {
         tours
       }
     })
-  } catch (error) {
+  } catch (err) {
     res.status(400).json({
       status: 'fail',
       message: err
@@ -30,7 +45,7 @@ exports.getTour = async (req, res) => {
         tour
       }
     })
-  } catch (error) {
+  } catch (err) {
     res.status(400).json({
       status: 'fail',
       message: err
@@ -56,10 +71,10 @@ exports.createTour = async (req, res) => {
       requestedAt: req.requestTime,
       data: { tour: newTour }
     })
-  } catch (error) {
+  } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: `Invalid data sent! 😅`
+      message: `${err} 😅`
     })
   }
 }

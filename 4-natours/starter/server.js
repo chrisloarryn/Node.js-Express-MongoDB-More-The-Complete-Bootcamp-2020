@@ -1,8 +1,8 @@
 // Related to express
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
-const app = require('./app')
 dotenv.config({ path: './config.env' })
+const app = require('./app')
 
 // DB is to connect to atlas.
 const DB = process.env.DATABASE.replace(

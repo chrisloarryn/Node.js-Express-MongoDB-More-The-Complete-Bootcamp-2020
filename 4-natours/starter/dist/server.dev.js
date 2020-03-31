@@ -5,11 +5,12 @@ var dotenv = require('dotenv');
 
 var mongoose = require('mongoose');
 
-var app = require('./app');
-
 dotenv.config({
   path: './config.env'
-}); // DB is to connect to atlas.
+});
+
+var app = require('./app'); // DB is to connect to atlas.
+
 
 var DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD); // || process.env.DATABASE_LOCAL
 

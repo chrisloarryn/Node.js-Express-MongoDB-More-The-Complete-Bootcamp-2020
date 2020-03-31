@@ -1,22 +1,42 @@
 "use strict";
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var mongoose = require('mongoose');
 
 var Tour = require('./../models/tourModel'); // 2) ROUTE HANDLERS
 
 
 exports.getAllTours = function _callee(req, res) {
-  var tours;
+  var queryObj, excludedFields, query, tours;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          _context.next = 3;
-          return regeneratorRuntime.awrap(Tour.find());
+          // BUILD QUERY
+          queryObj = _objectSpread({}, req.query);
+          excludedFields = ['page', 'sort', 'limit', 'fields'];
+          excludedFields.forEach(function (el) {
+            return delete queryObj[el];
+          });
+          query = Tour.find(queryObj); // const tours = await Tour.find()
+          //   .where('duration')
+          //   .equals(5)  // .lt(5)
+          //   .where('difficulty')
+          //   .equals('easy')
+          // EXECUTE QUERY
 
-        case 3:
+          _context.next = 7;
+          return regeneratorRuntime.awrap(query);
+
+        case 7:
           tours = _context.sent;
+          // SEND RESPONSE
           res.status(200).json({
             status: 'success',
             requestedAt: req.requestTime,
@@ -25,23 +45,23 @@ exports.getAllTours = function _callee(req, res) {
               tours: tours
             }
           });
-          _context.next = 10;
+          _context.next = 14;
           break;
 
-        case 7:
-          _context.prev = 7;
+        case 11:
+          _context.prev = 11;
           _context.t0 = _context["catch"](0);
           res.status(400).json({
             status: 'fail',
-            message: err
+            message: _context.t0
           });
 
-        case 10:
+        case 14:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 7]]);
+  }, null, null, [[0, 11]]);
 };
 
 exports.getTour = function _callee2(req, res) {
@@ -71,7 +91,7 @@ exports.getTour = function _callee2(req, res) {
           _context2.t0 = _context2["catch"](0);
           res.status(400).json({
             status: 'fail',
-            message: err
+            message: _context2.t0
           });
 
         case 10:
@@ -109,7 +129,7 @@ exports.createTour = function _callee3(req, res) {
           _context3.t0 = _context3["catch"](0);
           res.status(400).json({
             status: 'fail',
-            message: "Invalid data sent! \uD83D\uDE05"
+            message: "".concat(_context3.t0, " \uD83D\uDE05")
           });
 
         case 10:
