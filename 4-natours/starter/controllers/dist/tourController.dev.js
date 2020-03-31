@@ -1,6 +1,6 @@
 "use strict";
 
-var fs = require('fs');
+var mongoose = require('mongoose');
 
 var Tour = require('./../models/tourModel'); // 2) ROUTE HANDLERS
 
@@ -120,19 +120,76 @@ exports.createTour = function _callee3(req, res) {
   }, null, null, [[0, 7]]);
 };
 
-exports.updateTour = function (req, res) {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here>'
+exports.updateTour = function _callee4(req, res) {
+  var tour;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          _context4.next = 3;
+          return regeneratorRuntime.awrap(Tour.findByIdAndUpdate(req.params.id, req.body, {
+            "new": true,
+            runValidators: true
+          }));
+
+        case 3:
+          tour = _context4.sent;
+          res.status(200).json({
+            status: 'success',
+            data: {
+              tour: tour
+            }
+          });
+          _context4.next = 10;
+          break;
+
+        case 7:
+          _context4.prev = 7;
+          _context4.t0 = _context4["catch"](0);
+          res.status(404).json({
+            status: 'fail',
+            message: _context4.t0
+          });
+
+        case 10:
+        case "end":
+          return _context4.stop();
+      }
     }
-  });
+  }, null, null, [[0, 7]]);
 };
 
-exports.deleteTour = function (req, res) {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    data: null
-  });
+exports.deleteTour = function _callee5(req, res) {
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          _context5.next = 3;
+          return regeneratorRuntime.awrap(Tour.findByIdAndDelete(req.params.id));
+
+        case 3:
+          res.status(200).json({
+            status: 'success',
+            requestedAt: req.requestTime,
+            data: null
+          });
+          _context5.next = 9;
+          break;
+
+        case 6:
+          _context5.prev = 6;
+          _context5.t0 = _context5["catch"](0);
+          res.status(404).json({
+            status: 'fail',
+            message: _context5.t0
+          });
+
+        case 9:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[0, 6]]);
 };
