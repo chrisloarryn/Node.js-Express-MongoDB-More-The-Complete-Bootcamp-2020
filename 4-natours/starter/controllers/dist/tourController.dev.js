@@ -1,14 +1,8 @@
 "use strict";
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var mongoose = require('mongoose');
-
 var Tour = require('./../models/tourModel');
+
+var APIFeatures = require('./../utils/apiFeatures');
 
 exports.aliasTopTours = function _callee(req, res, next) {
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -29,64 +23,28 @@ exports.aliasTopTours = function _callee(req, res, next) {
 };
 
 exports.getAllTours = function _callee2(req, res) {
-  var queryObj, excludedFields, queryStr, query, sortBy, fields, page, limit, skip, numTours, tours;
+  var features, tours;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
           // BUILD QUERY
-          // 1) FILTERING
-          queryObj = _objectSpread({}, req.query);
-          excludedFields = ['page', 'sort', 'limit', 'fields'];
-          excludedFields.forEach(function (el) {
-            return delete queryObj[el];
-          }); // 1B) Advanced filtering
+          // 4) Pagination
+          // const page = req.query.page * 1 || 1
+          // const limit = req.query.limit * 1 || 100
+          // const skip = (page - 1) * limit
+          // query = query.skip(skip).limit(limit)
+          // if (req.query.page) {
+          //   const numTours = await Tour.countDocuments()
+          //   if (skip >= numTours) throwError('This page does not exist 😏')
+          // }
+          // EXECUTE QUERY
+          features = new APIFeatures(Tour.find(), req.query).filter().sort().limitFields().paginate();
+          _context2.next = 4;
+          return regeneratorRuntime.awrap(features.query);
 
-          queryStr = JSON.stringify(queryObj);
-          queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, function (match) {
-            return "$".concat(match);
-          });
-          query = Tour.find(JSON.parse(queryStr)); // 2) Sorting  => price or -price
-
-          if (req.query.sort) {
-            sortBy = req.query.sort.split(',').join(' ');
-            query = query.sort(sortBy);
-          } else {
-            query = query.sort('-createdAt');
-          } // 3) Field limiting  =>  show only some fields
-
-
-          if (req.query.fields) {
-            fields = req.query.fields.split(',').join(' ');
-            query = query.select(fields);
-          } else {
-            query = query.select('-__v');
-          } // 4) Pagination
-
-
-          page = req.query.page * 1 || 1;
-          limit = req.query.limit * 1 || 100;
-          skip = (page - 1) * limit;
-          query = query.skip(skip).limit(limit);
-
-          if (!req.query.page) {
-            _context2.next = 18;
-            break;
-          }
-
-          _context2.next = 16;
-          return regeneratorRuntime.awrap(Tour.countDocuments());
-
-        case 16:
-          numTours = _context2.sent;
-          if (skip >= numTours) throwError('This page does not exist 😏');
-
-        case 18:
-          _context2.next = 20;
-          return regeneratorRuntime.awrap(query);
-
-        case 20:
+        case 4:
           tours = _context2.sent;
           // SEND RESPONSE
           res.status(200).json({
@@ -97,23 +55,23 @@ exports.getAllTours = function _callee2(req, res) {
               tours: tours
             }
           });
-          _context2.next = 27;
+          _context2.next = 11;
           break;
 
-        case 24:
-          _context2.prev = 24;
+        case 8:
+          _context2.prev = 8;
           _context2.t0 = _context2["catch"](0);
           res.status(400).json({
             status: 'fail',
             message: _context2.t0
           });
 
-        case 27:
+        case 11:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 24]]);
+  }, null, null, [[0, 8]]);
 };
 
 exports.getTour = function _callee3(req, res) {
@@ -264,4 +222,80 @@ exports.deleteTour = function _callee6(req, res) {
       }
     }
   }, null, null, [[0, 6]]);
+};
+
+exports.getTourStats = function _callee7(req, res) {
+  var stats;
+  return regeneratorRuntime.async(function _callee7$(_context7) {
+    while (1) {
+      switch (_context7.prev = _context7.next) {
+        case 0:
+          _context7.prev = 0;
+          _context7.next = 3;
+          return regeneratorRuntime.awrap(Tour.aggregate([{
+            $match: {
+              ratingsAverage: {
+                $gte: 4.5
+              }
+            }
+          }, {
+            $group: {
+              // _id: '$ratingsAverage',
+              // _id: '$difficulty',
+              _id: {
+                $toUpper: '$difficulty'
+              },
+              num: {
+                $sum: 1
+              },
+              numRatings: {
+                $sum: '$ratingsQuantity'
+              },
+              avgRating: {
+                $avg: '$ratingsAverage'
+              },
+              avgPrice: {
+                $avg: '$price'
+              },
+              minPrice: {
+                $min: '$price'
+              },
+              maxPrice: {
+                $max: '$price'
+              }
+            }
+          }, {
+            $sort: {
+              avgPrice: 1
+            }
+          } // {
+          //   $match: { _id: { $ne: 'EASY' } }
+          // }
+          ]));
+
+        case 3:
+          stats = _context7.sent;
+          res.status(200).json({
+            status: 'success',
+            data: {
+              stats: stats
+            }
+          });
+          _context7.next = 10;
+          break;
+
+        case 7:
+          _context7.prev = 7;
+          _context7.t0 = _context7["catch"](0);
+          res.status(404).json({
+            status: 'fail',
+            message: _context7.t0
+          });
+
+        case 10:
+        case "end":
+          return _context7.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
 };
