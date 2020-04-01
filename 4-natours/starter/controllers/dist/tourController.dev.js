@@ -12,29 +12,64 @@ var Tour = require('./../models/tourModel'); // 2) ROUTE HANDLERS
 
 
 exports.getAllTours = function _callee(req, res) {
-  var queryObj, excludedFields, query, tours;
+  var queryObj, excludedFields, queryStr, query, sortBy, fields, page, limit, skip, numTours, tours;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
           // BUILD QUERY
+          // 1) FILTERING
           queryObj = _objectSpread({}, req.query);
           excludedFields = ['page', 'sort', 'limit', 'fields'];
           excludedFields.forEach(function (el) {
             return delete queryObj[el];
-          });
-          query = Tour.find(queryObj); // const tours = await Tour.find()
-          //   .where('duration')
-          //   .equals(5)  // .lt(5)
-          //   .where('difficulty')
-          //   .equals('easy')
-          // EXECUTE QUERY
+          }); // 1B) Advanced filtering
 
-          _context.next = 7;
+          queryStr = JSON.stringify(queryObj);
+          queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, function (match) {
+            return "$".concat(match);
+          });
+          query = Tour.find(JSON.parse(queryStr)); // 2) Sorting  => price or -price
+
+          if (req.query.sort) {
+            sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+          } else {
+            query = query.sort('-createdAt');
+          } // 3) Field limiting  =>  show only some fields
+
+
+          if (req.query.fields) {
+            fields = req.query.fields.split(',').join(' ');
+            query = query.select(fields);
+          } else {
+            query = query.select('-__v');
+          } // 4) Pagination
+
+
+          page = req.query.page * 1 || 1;
+          limit = req.query.limit * 1 || 100;
+          skip = (page - 1) * limit;
+          query = query.skip(skip).limit(limit);
+
+          if (!req.query.page) {
+            _context.next = 18;
+            break;
+          }
+
+          _context.next = 16;
+          return regeneratorRuntime.awrap(Tour.countDocuments());
+
+        case 16:
+          numTours = _context.sent;
+          if (skip >= numTours) throwError('This page does not exist 😏');
+
+        case 18:
+          _context.next = 20;
           return regeneratorRuntime.awrap(query);
 
-        case 7:
+        case 20:
           tours = _context.sent;
           // SEND RESPONSE
           res.status(200).json({
@@ -45,23 +80,23 @@ exports.getAllTours = function _callee(req, res) {
               tours: tours
             }
           });
-          _context.next = 14;
+          _context.next = 27;
           break;
 
-        case 11:
-          _context.prev = 11;
+        case 24:
+          _context.prev = 24;
           _context.t0 = _context["catch"](0);
           res.status(400).json({
             status: 'fail',
             message: _context.t0
           });
 
-        case 14:
+        case 27:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 11]]);
+  }, null, null, [[0, 24]]);
 };
 
 exports.getTour = function _callee2(req, res) {
