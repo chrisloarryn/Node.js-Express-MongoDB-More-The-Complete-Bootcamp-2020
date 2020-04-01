@@ -63,7 +63,7 @@ exports.getAllTours = function _callee2(req, res) {
           _context2.t0 = _context2["catch"](0);
           res.status(400).json({
             status: 'fail',
-            message: _context2.t0
+            message: "".concat(_context2.t0, " \uD83D\uDE05")
           });
 
         case 11:
@@ -101,7 +101,7 @@ exports.getTour = function _callee3(req, res) {
           _context3.t0 = _context3["catch"](0);
           res.status(400).json({
             status: 'fail',
-            message: _context3.t0
+            message: "".concat(_context3.t0, " \uD83D\uDE05")
           });
 
         case 10:
@@ -179,7 +179,7 @@ exports.updateTour = function _callee5(req, res) {
           _context5.t0 = _context5["catch"](0);
           res.status(404).json({
             status: 'fail',
-            message: _context5.t0
+            message: "".concat(_context5.t0, " \uD83D\uDE05")
           });
 
         case 10:
@@ -213,7 +213,7 @@ exports.deleteTour = function _callee6(req, res) {
           _context6.t0 = _context6["catch"](0);
           res.status(404).json({
             status: 'fail',
-            message: _context6.t0
+            message: "".concat(_context6.t0, " \uD83D\uDE05")
           });
 
         case 9:
@@ -289,7 +289,7 @@ exports.getTourStats = function _callee7(req, res) {
           _context7.t0 = _context7["catch"](0);
           res.status(404).json({
             status: 'fail',
-            message: _context7.t0
+            message: "".concat(_context7.t0, " \uD83D\uDE05")
           });
 
         case 10:
@@ -364,7 +364,7 @@ exports.getMonthlyPlan = function _callee8(req, res) {
           _context8.t0 = _context8["catch"](0);
           res.status(404).json({
             status: 'fail',
-            message: _context8.t0
+            message: "".concat(_context8.t0, " \uD83D\uDE05")
           });
 
         case 11:

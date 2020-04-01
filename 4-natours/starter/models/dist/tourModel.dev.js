@@ -2,7 +2,10 @@
 
 var mongoose = require('mongoose');
 
-var slugify = require('slugify');
+var slugify = require('slugify'); // validators.js library w/a lot of validators
+
+
+var validator = require('validator');
 
 var tourSchema = new mongoose.Schema({
   name: {
@@ -11,7 +14,8 @@ var tourSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     maxlength: [40, 'A tour must have less or more than 40 characters'],
-    minlength: [10, 'A tour must have less or equal than 10 characters']
+    minlength: [10, 'A tour must have less or equal than 10 characters'] // validate: [validator.isAlpha, 'Tour name must only contain characters']
+
   },
   slug: String,
   duration: {
@@ -24,7 +28,11 @@ var tourSchema = new mongoose.Schema({
   },
   difficulty: {
     type: String,
-    required: [true, 'A tour must have a difficulty']
+    required: [true, 'A tour must have a difficulty'],
+    "enum": {
+      values: ['easy', 'medium', 'difficult'],
+      message: 'Difficulty is either: easy, medium or difficult'
+    }
   },
   ratingsAverage: {
     type: Number,
@@ -40,7 +48,16 @@ var tourSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'A tour must have a price']
   },
-  priceDiscount: Number,
+  priceDiscount: {
+    type: Number,
+    validate: {
+      // this only points to current doc on NEW document creation
+      validator: function validator(val) {
+        return val < this.price; // 250 < 200
+      },
+      message: "Discount price should be below regular price."
+    }
+  },
   summary: {
     type: String,
     trim: true,
@@ -103,7 +120,7 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 tourSchema.post(/^find/, function (docs, next) {
-  console.log("Query took ".concat(Date.now() - this.start, " milliseconds! \u23F2")); // console.log(docs)
+  console.log("Query took ".concat(Date.now() - this.start, " milliseconds!")); // console.log(docs)
 
   next();
 }); // AGGREGATION MIDDLEWARE

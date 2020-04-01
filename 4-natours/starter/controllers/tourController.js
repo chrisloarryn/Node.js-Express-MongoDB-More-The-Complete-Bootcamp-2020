@@ -44,7 +44,7 @@ exports.getAllTours = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: err
+      message: `${err} 😅`
     })
   }
 }
@@ -61,7 +61,7 @@ exports.getTour = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: err
+      message: `${err} 😅`
     })
   }
 
@@ -107,7 +107,7 @@ exports.updateTour = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err
+      message: `${err} 😅`
     })
   }
 }
@@ -124,7 +124,7 @@ exports.deleteTour = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err
+      message: `${err} 😅`
     })
   }
 }
@@ -164,7 +164,7 @@ exports.getTourStats = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err
+      message: `${err} 😅`
     })
   }
 }
@@ -215,7 +215,7 @@ exports.getMonthlyPlan = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err
+      message: `${err} 😅`
     })
   }
 }
