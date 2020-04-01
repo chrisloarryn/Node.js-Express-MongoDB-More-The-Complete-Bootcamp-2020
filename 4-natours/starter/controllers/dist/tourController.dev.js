@@ -299,3 +299,78 @@ exports.getTourStats = function _callee7(req, res) {
     }
   }, null, null, [[0, 7]]);
 };
+
+exports.getMonthlyPlan = function _callee8(req, res) {
+  var year, plan;
+  return regeneratorRuntime.async(function _callee8$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+          _context8.prev = 0;
+          year = req.params.year * 1; // 2021
+
+          _context8.next = 4;
+          return regeneratorRuntime.awrap(Tour.aggregate([{
+            $unwind: '$startDates'
+          }, {
+            $match: {
+              startDates: {
+                $gte: new Date("".concat(year, "-01-01")),
+                $lte: new Date("".concat(year, "-12-31"))
+              }
+            }
+          }, {
+            $group: {
+              _id: {
+                $month: '$startDates'
+              },
+              numTourStarts: {
+                $sum: 1
+              },
+              tours: {
+                $push: '$name'
+              }
+            }
+          }, {
+            $addFields: {
+              month: '$_id'
+            }
+          }, {
+            $project: {
+              _id: 0
+            }
+          }, {
+            $sort: {
+              numTourStarts: -1
+            }
+          } // {
+          //   $limit: 6
+          // }
+          ]));
+
+        case 4:
+          plan = _context8.sent;
+          res.status(200).json({
+            status: 'success',
+            data: {
+              plan: plan
+            }
+          });
+          _context8.next = 11;
+          break;
+
+        case 8:
+          _context8.prev = 8;
+          _context8.t0 = _context8["catch"](0);
+          res.status(404).json({
+            status: 'fail',
+            message: _context8.t0
+          });
+
+        case 11:
+        case "end":
+          return _context8.stop();
+      }
+    }
+  }, null, null, [[0, 8]]);
+};

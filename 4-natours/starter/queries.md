@@ -83,7 +83,7 @@ tours
 > { "_id" : ObjectId("5e815e6c34c8dea5b2faa78e"), "name" : "The sea explorer", "price" : 597, "rating" : 4.8, "premium" : false }
 > { "_id" : ObjectId("5e815e6c34c8dea5b2faa78f"), "name" : "The Snow Adventurer", "price" : 597, "rating" : 4.9, "difficulty" : "easy", "premium" : true }
 ## updateMany
-> db.tours.updateMany( { price: {$gt: 500}, rating: {$gt: 4.8}}, {$set: {premium: true}} )
+> db.tours.updateMany( { price: {$gt: 500}, rating: {$gt: 4.8}}, {$set: {premium: true}} )tu
 > { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 0 }
 > db.tours.find()
 
@@ -96,3 +96,25 @@ tours
 > db.tours.deleteOne({ rating: {$lt: 4.8}} )
 > { "acknowledged" : true, "deletedCount" : 1 }
 > db.tours.deleteMany({})   //delete all
+
+
+## `update many to secret tour`
+`example with updateOne`
+> db.tours.updateOne({name: "The sea explorer"}, {$set: {premium: false}})
+> db.tours.updateOne({_id : ObjectId("5e815e6c34c8dea5b2faa78e")}, {$set: {price: 597}})
+
+
+## `updateMany by ObjectId("object id")`
+## example
+## > db.tours.updateMany({ $or: [{price: {$gt: 500}}, {rating: {$gte: 4.8}}] }, {$set: {premium: true}})
+## find example to orientation
+## db.tours.find({ _id: ObjectId("5e815e6c34c8dea5b2faa78e") })
+> db.tours.updateMany({_id:{$in:[ObjectId("5e84a99693de32e7b83f09d6"), ObjectId("5e84a91ef73c02e7705930af")]}},{$set: { secretTour: true }})
+
+## show
+> db.tours.find({_id:{$in:[ObjectId("5e84a99693de32e7b83f09d6"), ObjectId("5e84a91ef73c02e7705930af")]}})
+
+## updateOne({})
+> db.tours.updateOne({_id: ObjectId("5e84fbf8febe04feb9c188b4")}, {$set: {ratingsAverage: 6}})
+`EXAMPLE`
+## `db.tours.updateOne({_id : ObjectId("5e815e6c34c8dea5b2faa78e")}, {$set: {price: 597}})`
