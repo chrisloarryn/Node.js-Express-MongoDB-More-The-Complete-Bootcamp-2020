@@ -3,9 +3,8 @@
 var mongoose = require('mongoose');
 
 var slugify = require('slugify'); // validators.js library w/a lot of validators
+// const validator = require('validator')
 
-
-var validator = require('validator');
 
 var tourSchema = new mongoose.Schema({
   name: {
@@ -55,7 +54,7 @@ var tourSchema = new mongoose.Schema({
       validator: function validator(val) {
         return val < this.price; // 250 < 200
       },
-      message: "Discount price should be below regular price."
+      message: "Discount price should be below regular price"
     }
   },
   summary: {

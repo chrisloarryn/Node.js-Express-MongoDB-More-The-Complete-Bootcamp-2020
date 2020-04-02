@@ -1,0 +1,1 @@
+"use strict";module.exports=function(s,t,e,u){s.statusCode=s.statusCode||500,s.status=s.status||"error",e.status(s.statusCode).json({status:s.status,message:s.message})};

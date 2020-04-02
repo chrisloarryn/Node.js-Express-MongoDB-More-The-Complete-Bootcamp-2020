@@ -18,7 +18,7 @@ mongoose
     useUnifiedTopology: true
   })
   .then(con => {
-    console.log(`DB Connection Successfully 😁`)
+    console.log(`DB Connection Successfully! 😁`)
   })
 
 // console.log(process.env)
