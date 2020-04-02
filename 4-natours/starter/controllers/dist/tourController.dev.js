@@ -6,6 +6,8 @@ var APIFeatures = require('./../utils/apiFeatures');
 
 var catchAsync = require('./../utils/catchAsync');
 
+var AppError = require('./../utils/appError');
+
 exports.aliasTopTours = function _callee(req, res, next) {
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -65,7 +67,15 @@ exports.getTour = catchAsync(function _callee3(req, res, next) {
 
         case 2:
           tour = _context3.sent;
-          // const tour = await Tour.findOne({ _id: req.params.id})
+
+          if (tour) {
+            _context3.next = 5;
+            break;
+          }
+
+          return _context3.abrupt("return", next(new AppError('No tour found with that ID', 404)));
+
+        case 5:
           res.status(200).json({
             status: 'success',
             data: {
@@ -73,7 +83,7 @@ exports.getTour = catchAsync(function _callee3(req, res, next) {
             }
           });
 
-        case 4:
+        case 6:
         case "end":
           return _context3.stop();
       }
@@ -120,6 +130,15 @@ exports.updateTour = catchAsync(function _callee5(req, res, next) {
 
         case 2:
           tour = _context5.sent;
+
+          if (tour) {
+            _context5.next = 5;
+            break;
+          }
+
+          return _context5.abrupt("return", next(new AppError('No tour found with that ID', 404)));
+
+        case 5:
           res.status(200).json({
             status: 'success',
             data: {
@@ -127,7 +146,7 @@ exports.updateTour = catchAsync(function _callee5(req, res, next) {
             }
           });
 
-        case 4:
+        case 6:
         case "end":
           return _context5.stop();
       }
@@ -135,6 +154,7 @@ exports.updateTour = catchAsync(function _callee5(req, res, next) {
   });
 });
 exports.deleteTour = catchAsync(function _callee6(req, res, next) {
+  var tour;
   return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -143,13 +163,23 @@ exports.deleteTour = catchAsync(function _callee6(req, res, next) {
           return regeneratorRuntime.awrap(Tour.findByIdAndDelete(req.params.id));
 
         case 2:
+          tour = _context6.sent;
+
+          if (tour) {
+            _context6.next = 5;
+            break;
+          }
+
+          return _context6.abrupt("return", next(new AppError('No tour found with that ID', 404)));
+
+        case 5:
           res.status(200).json({
             status: 'success',
             requestedAt: req.requestTime,
             data: null
           });
 
-        case 3:
+        case 6:
         case "end":
           return _context6.stop();
       }
