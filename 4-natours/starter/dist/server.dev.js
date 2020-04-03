@@ -20,10 +20,17 @@ mongoose.connect(DB, {
   useFindAndModify: false,
   useUnifiedTopology: true
 }).then(function (con) {
-  console.log("DB Connection Successfully \uD83D\uDE01");
+  console.log("DB Connection Successfully! \uD83D\uDE01");
 }); // console.log(process.env)
 
 var port = process.env.PORT || 3000;
-app.listen(port, function () {
+var server = app.listen(port, function () {
   console.log("App running on port ".concat(port, "... \uD83D\uDE0A"));
+});
+process.on('unhandledRejection', function (err) {
+  console.log("".concat(err.name, ": ").concat(err.message));
+  console.log("UNHANDLED REJECTION! \uD83D\uDCA5 Shutting down...");
+  server.close(function () {
+    process.exit(1); // 0 success, 1 failure
+  });
 });
