@@ -28,8 +28,15 @@ var server = app.listen(port, function () {
   console.log("App running on port ".concat(port, "... \uD83D\uDE0A"));
 });
 process.on('unhandledRejection', function (err) {
-  console.log("".concat(err.name, ": ").concat(err.message));
+  console.log("\u25B6\uFE0F ".concat(err.name, ": ").concat(err.message, " \u25C0\uFE0F"));
   console.log("UNHANDLED REJECTION! \uD83D\uDCA5 Shutting down...");
+  server.close(function () {
+    process.exit(1); // 0 success, 1 failure
+  });
+});
+process.on('uncaughtException', function (err) {
+  console.log("\u25B6\uFE0F ".concat(err, " \u25C0\uFE0F"));
+  console.log("UNCAUGHT REJECTION! \uD83D\uDCA5 Shutting down...");
   server.close(function () {
     process.exit(1); // 0 success, 1 failure
   });

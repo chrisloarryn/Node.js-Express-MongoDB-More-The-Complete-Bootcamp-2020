@@ -9,6 +9,7 @@ const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 )
+
 // || process.env.DATABASE_LOCAL
 mongoose
   .connect(DB, {
@@ -28,8 +29,16 @@ const server = app.listen(port, () => {
 })
 
 process.on('unhandledRejection', err => {
-  console.log(`${err.name}: ${err.message}`)
+  console.log(`▶️ ${err.name}: ${err.message} ◀️`)
   console.log(`UNHANDLED REJECTION! 💥 Shutting down...`)
+  server.close(() => {
+    process.exit(1) // 0 success, 1 failure
+  })
+})
+
+process.on('uncaughtException', err => {
+  console.log(`▶️ ${err} ◀️`)
+  console.log(`UNCAUGHT REJECTION! 💥 Shutting down...`)
   server.close(() => {
     process.exit(1) // 0 success, 1 failure
   })
