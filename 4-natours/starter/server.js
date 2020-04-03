@@ -1,6 +1,13 @@
 // Related to express
-const dotenv = require('dotenv')
 const mongoose = require('mongoose')
+const dotenv = require('dotenv')
+
+process.on('uncaughtException', err => {
+  console.log(`▶️ ${err} ◀️`)
+  console.log(`UNCAUGHT REJECTION! 💥 Shutting down...`)
+  process.exit(1) // 0 success, 1 failure
+})
+
 dotenv.config({ path: './config.env' })
 const app = require('./app')
 
@@ -36,10 +43,3 @@ process.on('unhandledRejection', err => {
   })
 })
 
-process.on('uncaughtException', err => {
-  console.log(`▶️ ${err} ◀️`)
-  console.log(`UNCAUGHT REJECTION! 💥 Shutting down...`)
-  server.close(() => {
-    process.exit(1) // 0 success, 1 failure
-  })
-})

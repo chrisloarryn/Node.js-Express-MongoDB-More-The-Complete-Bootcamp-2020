@@ -1,10 +1,15 @@
 "use strict";
 
 // Related to express
-var dotenv = require('dotenv');
-
 var mongoose = require('mongoose');
 
+var dotenv = require('dotenv');
+
+process.on('uncaughtException', function (err) {
+  console.log("\u25B6\uFE0F ".concat(err, " \u25C0\uFE0F"));
+  console.log("UNCAUGHT REJECTION! \uD83D\uDCA5 Shutting down...");
+  process.exit(1); // 0 success, 1 failure
+});
 dotenv.config({
   path: './config.env'
 });
@@ -30,13 +35,6 @@ var server = app.listen(port, function () {
 process.on('unhandledRejection', function (err) {
   console.log("\u25B6\uFE0F ".concat(err.name, ": ").concat(err.message, " \u25C0\uFE0F"));
   console.log("UNHANDLED REJECTION! \uD83D\uDCA5 Shutting down...");
-  server.close(function () {
-    process.exit(1); // 0 success, 1 failure
-  });
-});
-process.on('uncaughtException', function (err) {
-  console.log("\u25B6\uFE0F ".concat(err, " \u25C0\uFE0F"));
-  console.log("UNCAUGHT REJECTION! \uD83D\uDCA5 Shutting down...");
   server.close(function () {
     process.exit(1); // 0 success, 1 failure
   });
