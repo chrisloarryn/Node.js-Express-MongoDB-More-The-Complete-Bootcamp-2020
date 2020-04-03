@@ -26,7 +26,8 @@ var userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Please provide a password'],
-    minlength: 8
+    minlength: 8,
+    select: false
   },
   passwordConfirm: {
     type: String,
@@ -68,5 +69,25 @@ userSchema.pre('save', function _callee(next) {
     }
   }, null, this);
 });
+
+userSchema.methods.correctPassword = function _callee2(candidatePassword, userPassword) {
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.next = 2;
+          return regeneratorRuntime.awrap(bcrypt.compare(candidatePassword, userPassword));
+
+        case 2:
+          return _context2.abrupt("return", _context2.sent);
+
+        case 3:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  });
+};
+
 var User = mongoose.model('User', userSchema);
 module.exports = User;
