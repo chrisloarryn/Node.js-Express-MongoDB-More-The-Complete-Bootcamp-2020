@@ -173,11 +173,15 @@ exports.deleteTour = catchAsync(function _callee6(req, res, next) {
           return _context6.abrupt("return", next(new AppError('No tour found with that ID', 404)));
 
         case 5:
-          res.status(200).json({
+          res.status(204).json({
             status: 'success',
             requestedAt: req.requestTime,
             data: null
-          });
+          }); // res.status(201).json({
+          //   status: 'success',
+          //   requestedAt: req.requestTime,
+          //   data: null
+          // })
 
         case 6:
         case "end":

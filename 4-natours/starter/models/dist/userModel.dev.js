@@ -1,5 +1,7 @@
 "use strict";
 
+var crypto = require('crypto');
+
 var mongoose = require('mongoose'); // const slugify = require('slugify')
 
 
@@ -23,6 +25,11 @@ var userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Please provide a valid email']
   },
   photo: String,
+  role: {
+    type: String,
+    "enum": ['user', 'guide', 'lead-guide', 'admin'],
+    "default": 'user'
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
@@ -40,7 +47,9 @@ var userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!'
     }
   },
-  passwordChangedAt: Date
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date
 });
 userSchema.pre('save', function _callee(next) {
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -70,6 +79,12 @@ userSchema.pre('save', function _callee(next) {
     }
   }, null, this);
 });
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next(); // -1000 token created after that passwordChangedAt is created.
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
 
 userSchema.methods.correctPassword = function _callee2(candidatePassword, userPassword) {
   return regeneratorRuntime.async(function _callee2$(_context2) {
@@ -98,6 +113,16 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   }
 
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  var resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  console.log({
+    resetToken: resetToken
+  }, this.passwordResetToken);
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 var User = mongoose.model('User', userSchema);

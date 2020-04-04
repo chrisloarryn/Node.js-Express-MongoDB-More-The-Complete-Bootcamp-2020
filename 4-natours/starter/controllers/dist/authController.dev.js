@@ -1,5 +1,7 @@
 "use strict";
 
+var crypto = require('crypto');
+
 var _require = require('util'),
     promisify = _require.promisify;
 
@@ -10,6 +12,8 @@ var User = require('../models/userModel');
 var catchAsync = require('./../utils/catchAsync');
 
 var AppError = require('./../utils/appError');
+
+var sendEmail = require('./../utils/email');
 
 var signToken = function signToken(id) {
   return jwt.sign({
@@ -29,6 +33,7 @@ exports.signup = catchAsync(function _callee(req, res, next) {
           return regeneratorRuntime.awrap(User.create({
             name: req.body.name,
             email: req.body.email,
+            role: req.body.role,
             password: req.body.password,
             passwordConfirm: req.body.passwordConfirm,
             passwordChangedAt: req.body.passwordChangedAt
@@ -165,6 +170,141 @@ exports.protect = catchAsync(function _callee3(req, res, next) {
         case 15:
         case "end":
           return _context3.stop();
+      }
+    }
+  });
+});
+
+exports.restrictTo = function () {
+  for (var _len = arguments.length, roles = new Array(_len), _key = 0; _key < _len; _key++) {
+    roles[_key] = arguments[_key];
+  }
+
+  return function (req, res, next) {
+    // Roles ['admin', 'lead-guide']. role='user'
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission to perform this action', 403));
+    }
+
+    next();
+  };
+};
+
+exports.forgotPassword = catchAsync(function _callee4(req, res, next) {
+  var user, resetToken, resetURL, message;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.next = 2;
+          return regeneratorRuntime.awrap(User.findOne({
+            email: req.body.email
+          }));
+
+        case 2:
+          user = _context4.sent;
+
+          if (user) {
+            _context4.next = 5;
+            break;
+          }
+
+          return _context4.abrupt("return", next(new AppError('There is no user with email address.', 404)));
+
+        case 5:
+          // 2) Generate the random reset token
+          resetToken = user.createPasswordResetToken();
+          _context4.next = 8;
+          return regeneratorRuntime.awrap(user.save({
+            validateBeforeSave: false
+          }));
+
+        case 8:
+          // 3) Send it to user's email
+          resetURL = "".concat(req.protocol, "://").concat(req.get('host'), "/api/v1/users/resetPassword/").concat(resetToken);
+          message = "Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ".concat(resetURL, ".\n If you didn't forget your password, please ignore this email");
+          _context4.prev = 10;
+          _context4.next = 13;
+          return regeneratorRuntime.awrap(sendEmail({
+            email: user.email,
+            subject: 'Your password reset token (valid for 10 min)',
+            message: message
+          }));
+
+        case 13:
+          res.status(200).json({
+            status: 'success',
+            message: "Token sent to email!"
+          });
+          _context4.next = 23;
+          break;
+
+        case 16:
+          _context4.prev = 16;
+          _context4.t0 = _context4["catch"](10);
+          user.passwordResetToken = undefined;
+          user.passwordResetExpires = undefined;
+          _context4.next = 22;
+          return regeneratorRuntime.awrap(user.save({
+            validateBeforeSave: false
+          }));
+
+        case 22:
+          return _context4.abrupt("return", next(new AppError('There was an error sending the email. Try again later!', 500)));
+
+        case 23:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[10, 16]]);
+});
+exports.resetPassword = catchAsync(function _callee5(req, res, next) {
+  var hashedToken, user, token;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          // 1) Get user baded on the token
+          hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+          _context5.next = 3;
+          return regeneratorRuntime.awrap(User.findOne({
+            passwordResetToken: hashedToken,
+            passwordResetExpires: {
+              $gt: Date.now()
+            }
+          }));
+
+        case 3:
+          user = _context5.sent;
+
+          if (user) {
+            _context5.next = 6;
+            break;
+          }
+
+          return _context5.abrupt("return", next(new AppError('Token is invalid or has expired', 400)));
+
+        case 6:
+          user.password = req.body.password;
+          user.passwordConfirm = req.body.passwordConfirm;
+          user.passwordResetToken = undefined;
+          user.passwordExpires = undefined;
+          _context5.next = 12;
+          return regeneratorRuntime.awrap(user.save());
+
+        case 12:
+          // 3) Update changedPasswordAt property for the user
+          // 4) Log the user in, send JWT
+          token = signToken(user._id);
+          res.status(200).json({
+            status: 'success',
+            token: token
+          });
+
+        case 14:
+        case "end":
+          return _context5.stop();
       }
     }
   });
