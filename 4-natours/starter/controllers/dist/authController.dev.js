@@ -1,5 +1,8 @@
 "use strict";
 
+var _require = require('util'),
+    promisify = _require.promisify;
+
 var jwt = require('jsonwebtoken');
 
 var User = require('../models/userModel');
@@ -27,7 +30,8 @@ exports.signup = catchAsync(function _callee(req, res, next) {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            passwordConfirm: req.body.passwordConfirm
+            passwordConfirm: req.body.passwordConfirm,
+            passwordChangedAt: req.body.passwordChangedAt
           }));
 
         case 2:
@@ -104,6 +108,63 @@ exports.login = catchAsync(function _callee2(req, res, next) {
         case 15:
         case "end":
           return _context2.stop();
+      }
+    }
+  });
+});
+exports.protect = catchAsync(function _callee3(req, res, next) {
+  var token, decoded, currentUser;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          // 1) Getting token and check of it's there
+          if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            token = req.headers.authorization.split(' ')[1];
+          }
+
+          if (token) {
+            _context3.next = 3;
+            break;
+          }
+
+          return _context3.abrupt("return", next(new AppError('Your are not logged in! Please log in to get access.', 401)));
+
+        case 3:
+          _context3.next = 5;
+          return regeneratorRuntime.awrap(promisify(jwt.verify)(token, process.env.JWT_SECRET));
+
+        case 5:
+          decoded = _context3.sent;
+          _context3.next = 8;
+          return regeneratorRuntime.awrap(User.findById(decoded.id));
+
+        case 8:
+          currentUser = _context3.sent;
+
+          if (currentUser) {
+            _context3.next = 11;
+            break;
+          }
+
+          return _context3.abrupt("return", next(new AppError('The user belonging to this token does not longer exist.', 401)));
+
+        case 11:
+          if (!currentUser.changedPasswordAfter(decoded.iat)) {
+            _context3.next = 13;
+            break;
+          }
+
+          return _context3.abrupt("return", next(new AppError('User recently changed password! Please log in again.', 401)));
+
+        case 13:
+          // GRANT ACCESS TO PROTECTED ROUTE
+          req.user = currentUser;
+          next();
+
+        case 15:
+        case "end":
+          return _context3.stop();
       }
     }
   });

@@ -22,7 +22,8 @@ app.use(express.json()); // it's like bodyParser (body-parser)
 
 app.use(express["static"]("".concat(__dirname, "/public")));
 app.use(function (req, res, next) {
-  req.requestTime = new Date().toISOString();
+  req.requestTime = new Date().toISOString(); // console.log(req.headers);
+
   next();
 }); // 2) ROUTES
 
