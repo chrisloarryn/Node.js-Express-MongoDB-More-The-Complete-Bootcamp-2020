@@ -59,8 +59,8 @@ exports.updateMe = catchAsync(function _callee2(req, res, next) {
           return _context2.abrupt("return", next(new AppError('This route is not for password updates. Please use /updateMyPassword', 400)));
 
         case 2:
-          // 2) Update user document
-          filteredBody = filterObj(req.body, 'name', 'email'); // body.role = 'admin'
+          // 2) Filtered out unwanted field names that are not allowed to be updated
+          filteredBody = filterObj(req.body, 'name', 'email'); // 3) Update user document
 
           _context2.next = 5;
           return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, filteredBody, {
