@@ -25,6 +25,14 @@ var signToken = function signToken(id) {
 
 var createSendToken = function createSendToken(user, statusCode, res) {
   var token = signToken(user._id);
+  var cookieOptions = {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true
+  };
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  res.cookie('jwt', token, cookieOptions); // Remove password from output
+
+  user.password = undefined;
   res.status(statusCode).json({
     status: 'success',
     token: token,
@@ -104,7 +112,7 @@ exports.login = catchAsync(function _callee2(req, res, next) {
             break;
           }
 
-          return _context2.abrupt("return", next(new AppError('Incorrect email or password', 401)));
+          return _context2.abrupt("return", next(new AppError('Incorrect email or password (or user is inactive)', 401)));
 
         case 13:
           // 3) If everything is ok, send the token to client
