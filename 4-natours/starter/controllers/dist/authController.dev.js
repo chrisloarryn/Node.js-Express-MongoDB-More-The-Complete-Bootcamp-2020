@@ -23,8 +23,19 @@ var signToken = function signToken(id) {
   });
 };
 
+var createSendToken = function createSendToken(user, statusCode, res) {
+  var token = signToken(user._id);
+  res.status(statusCode).json({
+    status: 'success',
+    token: token,
+    data: {
+      user: user
+    }
+  });
+};
+
 exports.signup = catchAsync(function _callee(req, res, next) {
-  var newUser, token;
+  var newUser;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -41,16 +52,9 @@ exports.signup = catchAsync(function _callee(req, res, next) {
 
         case 2:
           newUser = _context.sent;
-          token = signToken(newUser._id);
-          res.status(201).json({
-            status: 'success',
-            token: token,
-            data: {
-              user: newUser
-            }
-          });
+          createSendToken(newUser, 201, res);
 
-        case 5:
+        case 4:
         case "end":
           return _context.stop();
       }
@@ -58,7 +62,7 @@ exports.signup = catchAsync(function _callee(req, res, next) {
   });
 });
 exports.login = catchAsync(function _callee2(req, res, next) {
-  var _req$body, email, password, user, token;
+  var _req$body, email, password, user;
 
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
@@ -104,13 +108,9 @@ exports.login = catchAsync(function _callee2(req, res, next) {
 
         case 13:
           // 3) If everything is ok, send the token to client
-          token = signToken(user._id);
-          res.status(200).json({
-            status: 'success',
-            token: token
-          });
+          createSendToken(user, 200, res);
 
-        case 15:
+        case 14:
         case "end":
           return _context2.stop();
       }
@@ -260,7 +260,7 @@ exports.forgotPassword = catchAsync(function _callee4(req, res, next) {
   }, null, null, [[10, 16]]);
 });
 exports.resetPassword = catchAsync(function _callee5(req, res, next) {
-  var hashedToken, user, token;
+  var hashedToken, user;
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
@@ -296,15 +296,52 @@ exports.resetPassword = catchAsync(function _callee5(req, res, next) {
         case 12:
           // 3) Update changedPasswordAt property for the user
           // 4) Log the user in, send JWT
-          token = signToken(user._id);
-          res.status(200).json({
-            status: 'success',
-            token: token
-          });
+          createSendToken(user, 200, res);
 
-        case 14:
+        case 13:
         case "end":
           return _context5.stop();
+      }
+    }
+  });
+});
+exports.updatePassword = catchAsync(function _callee6(req, res, next) {
+  var user;
+  return regeneratorRuntime.async(function _callee6$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.next = 2;
+          return regeneratorRuntime.awrap(User.findById(req.user.id).select('+password'));
+
+        case 2:
+          user = _context6.sent;
+          _context6.next = 5;
+          return regeneratorRuntime.awrap(user.correctPassword(req.body.passwordCurrent, user.password));
+
+        case 5:
+          if (_context6.sent) {
+            _context6.next = 7;
+            break;
+          }
+
+          return _context6.abrupt("return", next(new AppError('Your current password is wrong.', 401)));
+
+        case 7:
+          // 3) If so, update password
+          user.password = req.body.password;
+          user.passwordConfirm = req.body.passwordConfirm;
+          _context6.next = 11;
+          return regeneratorRuntime.awrap(user.save());
+
+        case 11:
+          // // User.findByIdAndUpdate() will NOT work as intended;
+          // 4) Log user in, send JWT
+          createSendToken(user, 200, res);
+
+        case 12:
+        case "end":
+          return _context6.stop();
       }
     }
   });
