@@ -82,6 +82,29 @@ exports.updateMe = catchAsync(function _callee2(req, res, next) {
     }
   });
 });
+exports.deleteMe = catchAsync(function _callee3(req, res, next) {
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 2;
+          return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, {
+            active: false
+          }));
+
+        case 2:
+          res.status(204).json({
+            status: 'success',
+            data: null
+          });
+
+        case 3:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+});
 
 exports.getUser = function (req, res) {
   res.status(500).json({

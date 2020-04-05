@@ -49,7 +49,12 @@ var userSchema = new mongoose.Schema({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    "default": true,
+    select: false
+  }
 });
 userSchema.pre('save', function _callee(next) {
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -83,6 +88,15 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next(); // -1000 token created after that passwordChangedAt is created.
 
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+userSchema.pre(/^find/, function (next) {
+  // This points to the current query
+  this.find({
+    active: {
+      $ne: false
+    }
+  });
   next();
 });
 
