@@ -63,7 +63,7 @@ exports.getTour = catchAsync(function _callee3(req, res, next) {
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
-          return regeneratorRuntime.awrap(Tour.findById(req.params.id));
+          return regeneratorRuntime.awrap(Tour.findById(req.params.id).populate('reviews'));
 
         case 2:
           tour = _context3.sent;

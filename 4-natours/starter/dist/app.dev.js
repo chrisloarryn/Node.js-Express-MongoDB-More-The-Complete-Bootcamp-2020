@@ -22,6 +22,8 @@ var tourRouter = require('./routes/tourRoutes');
 
 var userRouter = require('./routes/userRoutes');
 
+var reviewRouter = require('./routes/reviewRoutes');
+
 var app = express(); // 1) GLOBAL MIDDLEWARE
 // Set security HTTP headers
 
@@ -63,6 +65,7 @@ app.use(function (req, res, next) {
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 app.all('*', function (req, res, next) {
   next(new AppError("Can't find ".concat(req.originalUrl, " on this server!"), 404));
 });
