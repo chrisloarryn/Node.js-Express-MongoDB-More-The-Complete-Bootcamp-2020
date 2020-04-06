@@ -36,14 +36,20 @@ var reviewSchema = new mongoose.Schema({
   }
 });
 reviewSchema.pre(/^find/, function (next) {
+  //   this.populate({
+  //     path: 'tour',
+  //     select: 'name'
+  //   }).populate({
+  //     path: 'user',
+  //     select: 'name photo'
+  //   })
   this.populate({
-    path: 'tour',
-    select: 'name'
-  }).populate({
     path: 'user',
     select: 'name photo'
   });
   next();
 });
 var Review = mongoose.model('Review', reviewSchema);
-module.exports = Review;
+module.exports = Review; // POST /tour/34qwres/reviews
+// GET /tour/34qwres/reviews
+// POST /tour/34qwres/reviews/q4qrqwe

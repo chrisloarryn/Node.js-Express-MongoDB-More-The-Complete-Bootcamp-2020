@@ -36,10 +36,13 @@ exports.createReview = catchAsync(function _callee2(req, res, next) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _context2.next = 2;
+          // Allow nested routes
+          if (!req.body.tour) req.body.tour = req.params.tourId;
+          if (!req.body.user) req.body.user = req.user.id;
+          _context2.next = 4;
           return regeneratorRuntime.awrap(Review.create(req.body));
 
-        case 2:
+        case 4:
           newReview = _context2.sent;
           res.status(201).json({
             status: 'success',
@@ -48,7 +51,7 @@ exports.createReview = catchAsync(function _callee2(req, res, next) {
             }
           });
 
-        case 4:
+        case 6:
         case "end":
           return _context2.stop();
       }
