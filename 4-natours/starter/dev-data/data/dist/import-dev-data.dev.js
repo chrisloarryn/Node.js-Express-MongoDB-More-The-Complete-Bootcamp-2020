@@ -23,7 +23,7 @@ mongoose.connect(DB, {
   console.log("DB Connection Successfully \uD83D\uDE01");
 }); // READ JSON FILE
 
-var tours = JSON.parse(fs.readFileSync("".concat(__dirname, "/tours-simple.json"), 'utf-8')); // IMPORT DATA INTO DB
+var tours = JSON.parse(fs.readFileSync("".concat(__dirname, "/tours.json"), 'utf-8')); // IMPORT DATA INTO DB
 
 var importData = function importData() {
   return regeneratorRuntime.async(function importData$(_context) {
