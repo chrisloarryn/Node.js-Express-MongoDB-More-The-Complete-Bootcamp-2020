@@ -50,6 +50,4 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 var Review = mongoose.model('Review', reviewSchema);
-module.exports = Review; // POST /tour/34qwres/reviews
-// GET /tour/34qwres/reviews
-// POST /tour/34qwres/reviews/q4qrqwe
+module.exports = Review;
