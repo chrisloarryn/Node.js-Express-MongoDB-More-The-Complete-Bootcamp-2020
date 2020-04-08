@@ -4,16 +4,22 @@ var Review = require('./../models/reviewModel');
 
 var catchAsync = require('./../utils/catchAsync');
 
+var factory = require('./handlerFactory');
+
 exports.getAllReviews = catchAsync(function _callee(req, res, next) {
-  var reviews;
+  var filter, reviews;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.next = 2;
-          return regeneratorRuntime.awrap(Review.find());
+          filter = {};
+          if (req.params.tourId) filter = {
+            tour: req.params.tourId
+          };
+          _context.next = 4;
+          return regeneratorRuntime.awrap(Review.find(filter));
 
-        case 2:
+        case 4:
           reviews = _context.sent;
           res.status(200).json({
             status: 'success',
@@ -23,38 +29,21 @@ exports.getAllReviews = catchAsync(function _callee(req, res, next) {
             }
           });
 
-        case 4:
+        case 6:
         case "end":
           return _context.stop();
       }
     }
   });
 });
-exports.createReview = catchAsync(function _callee2(req, res, next) {
-  var newReview;
-  return regeneratorRuntime.async(function _callee2$(_context2) {
-    while (1) {
-      switch (_context2.prev = _context2.next) {
-        case 0:
-          // Allow nested routes
-          if (!req.body.tour) req.body.tour = req.params.tourId;
-          if (!req.body.user) req.body.user = req.user.id;
-          _context2.next = 4;
-          return regeneratorRuntime.awrap(Review.create(req.body));
 
-        case 4:
-          newReview = _context2.sent;
-          res.status(201).json({
-            status: 'success',
-            data: {
-              review: newReview
-            }
-          });
+exports.setTourUserIds = function (req, res, next) {
+  // Allow nested routes
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
 
-        case 6:
-        case "end":
-          return _context2.stop();
-      }
-    }
-  });
-});
+exports.createReview = factory.createOne(Review);
+exports.updateReview = factory.updateOne(Review);
+exports.deleteReview = factory.deleteOne(Review);

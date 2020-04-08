@@ -6,6 +6,8 @@ var catchAsync = require('./../utils/catchAsync');
 
 var AppError = require('./../utils/appError');
 
+var factory = require('./handlerFactory');
+
 var filterObj = function filterObj(obj) {
   for (var _len = arguments.length, allowedFields = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     allowedFields[_key - 1] = arguments[_key];
@@ -120,20 +122,8 @@ exports.createUser = function (req, res) {
     requestedAt: req.requestTime,
     message: 'This route is not yet defined! 😏'
   });
-};
+}; // Do NOT update passwords with this
 
-exports.updateUser = function (req, res) {
-  res.status(500).json({
-    status: 'error',
-    requestedAt: req.requestTime,
-    message: 'This route is not yet defined! 😏'
-  });
-};
 
-exports.deleteUser = function (req, res) {
-  res.status(500).json({
-    status: 'error',
-    requestedAt: req.requestTime,
-    message: 'This route is not yet defined! 😏'
-  });
-};
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
