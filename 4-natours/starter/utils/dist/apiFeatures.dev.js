@@ -42,7 +42,7 @@ function () {
     key: "sort",
     value: function sort() {
       if (this.queryString.sort) {
-        var sortBy = this.queryString.split(',').join(' ');
+        var sortBy = this.queryString.sort.split(',').join(' ');
         this.query = this.query.sort(sortBy);
       } else {
         this.query = this.query.sort('-createdAt');

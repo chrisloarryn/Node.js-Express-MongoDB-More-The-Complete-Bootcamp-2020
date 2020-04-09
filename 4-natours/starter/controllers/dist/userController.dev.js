@@ -107,20 +107,13 @@ exports.deleteMe = catchAsync(function _callee3(req, res, next) {
     }
   });
 });
-
-exports.getUser = function (req, res) {
-  res.status(500).json({
-    status: 'error',
-    requestedAt: req.requestTime,
-    message: 'This route is not yet defined! 😏'
-  });
-};
+exports.getUser = factory.getOne(User);
 
 exports.createUser = function (req, res) {
   res.status(500).json({
     status: 'error',
     requestedAt: req.requestTime,
-    message: 'This route is not yet defined! 😏'
+    message: 'This route is not yet defined! Please use sign up instead😏'
   });
 }; // Do NOT update passwords with this
 
