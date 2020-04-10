@@ -1,5 +1,9 @@
 "use strict";
 
+var chalk = require('chalk');
+
+var log = console.log;
+
 var fs = require('fs');
 
 var dotenv = require('dotenv');
@@ -24,7 +28,7 @@ mongoose.connect(DB, {
   useFindAndModify: false,
   useUnifiedTopology: true
 }).then(function (con) {
-  console.log("DB Connection Successfully \uD83D\uDE01");
+  log("DB Connection Successfully \uD83D\uDE01");
 }); // READ JSON FILE
 
 var tours = JSON.parse(fs.readFileSync("".concat(__dirname, "/tours.json"), 'utf-8'));
@@ -41,32 +45,37 @@ var importData = function importData() {
           return regeneratorRuntime.awrap(Tour.create(tours));
 
         case 3:
-          _context.next = 5;
-          return regeneratorRuntime.awrap(User.create(users));
+          log(chalk.blue('tours created') + chalk.red('!!'));
+          _context.next = 6;
+          return regeneratorRuntime.awrap(User.create(users, {
+            validateBeforeSave: false
+          }));
 
-        case 5:
-          _context.next = 7;
+        case 6:
+          log(chalk.blue('users created') + chalk.red('!!'));
+          _context.next = 9;
           return regeneratorRuntime.awrap(Review.create(reviews));
 
-        case 7:
-          console.log("Data successfully loaded! \uD83D\uDE01");
-          _context.next = 13;
+        case 9:
+          log(chalk.blue('reviews created') + chalk.red('!!'));
+          log(chalk.green("Data successfully loaded! \uD83D\uDE01"));
+          _context.next = 16;
           break;
 
-        case 10:
-          _context.prev = 10;
-          _context.t0 = _context["catch"](0);
-          console.log(_context.t0);
-
         case 13:
+          _context.prev = 13;
+          _context.t0 = _context["catch"](0);
+          log(_context.t0);
+
+        case 16:
           process.exit();
 
-        case 14:
+        case 17:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 13]]);
 }; // DELETE ALL DATA FROM DB
 
 
@@ -80,32 +89,35 @@ var deleteData = function deleteData() {
           return regeneratorRuntime.awrap(Tour.deleteMany());
 
         case 3:
-          _context2.next = 5;
+          log(chalk.blue('tours deleted') + chalk.red('!!'));
+          _context2.next = 6;
           return regeneratorRuntime.awrap(User.deleteMany());
 
-        case 5:
-          _context2.next = 7;
+        case 6:
+          log(chalk.blue('users deleted') + chalk.red('!!'));
+          _context2.next = 9;
           return regeneratorRuntime.awrap(Review.deleteMany());
 
-        case 7:
-          console.log("Data successfully deleted! \uD83D\uDE0F");
-          _context2.next = 13;
+        case 9:
+          log(chalk.blue('reviews deleted') + chalk.red('!!'));
+          log(chalk.green("Data successfully deleted! \uD83D\uDE0F"));
+          _context2.next = 16;
           break;
 
-        case 10:
-          _context2.prev = 10;
-          _context2.t0 = _context2["catch"](0);
-          console.log(_context2.t0);
-
         case 13:
+          _context2.prev = 13;
+          _context2.t0 = _context2["catch"](0);
+          log(_context2.t0);
+
+        case 16:
           process.exit();
 
-        case 14:
+        case 17:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 13]]);
 }; // EXPORT DATA INTO DB
 
 

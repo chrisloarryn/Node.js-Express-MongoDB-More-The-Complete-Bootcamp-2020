@@ -1,3 +1,6 @@
+const chalk = require('chalk')
+const log = console.log
+
 const fs = require('fs')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
@@ -21,7 +24,7 @@ mongoose
     useUnifiedTopology: true
   })
   .then(con => {
-    console.log(`DB Connection Successfully 😁`)
+    log(`DB Connection Successfully 😁`)
   })
 
 // READ JSON FILE
@@ -35,11 +38,14 @@ const reviews = JSON.parse(
 const importData = async () => {
   try {
     await Tour.create(tours)
-    await User.create(users)
+    log(chalk.blue('tours created') + chalk.red('!!'))
+    await User.create(users, { validateBeforeSave: false })
+    log(chalk.blue('users created') + chalk.red('!!'))
     await Review.create(reviews)
-    console.log(`Data successfully loaded! 😁`)
+    log(chalk.blue('reviews created') + chalk.red('!!'))
+    log(chalk.green(`Data successfully loaded! 😁`))
   } catch (err) {
-    console.log(err)
+    log(err)
   }
   process.exit()
 }
@@ -48,11 +54,14 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Tour.deleteMany()
+    log(chalk.blue('tours deleted') + chalk.red('!!'))
     await User.deleteMany()
+    log(chalk.blue('users deleted') + chalk.red('!!'))
     await Review.deleteMany()
-    console.log(`Data successfully deleted! 😏`)
+    log(chalk.blue('reviews deleted') + chalk.red('!!'))
+    log(chalk.green(`Data successfully deleted! 😏`))
   } catch (err) {
-    console.log(err)
+    log(err)
   }
   process.exit()
 }

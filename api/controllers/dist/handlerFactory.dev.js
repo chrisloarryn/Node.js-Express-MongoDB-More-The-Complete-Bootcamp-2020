@@ -169,6 +169,7 @@ exports.getAll = function (Model) {
 
           case 5:
             doc = _context5.sent;
+            // const doc = await features.query.explain()
             // SEND RESPONSE
             res.status(200).json({
               status: 'success',
