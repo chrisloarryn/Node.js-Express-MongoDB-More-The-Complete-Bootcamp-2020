@@ -2,13 +2,10 @@
 
 var Tour = require('./../models/tourModel');
 
-var APIFeatures = require('./../utils/apiFeatures');
-
 var catchAsync = require('./../utils/catchAsync');
 
-var AppError = require('./../utils/appError');
+var factory = require('./handlerFactory'); // const AppError = require('./../utils/appError')
 
-var factory = require('./handlerFactory');
 
 exports.aliasTopTours = function _callee(req, res, next) {
   return regeneratorRuntime.async(function _callee$(_context) {

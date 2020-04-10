@@ -20,58 +20,31 @@ var filterObj = function filterObj(obj) {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(function _callee(req, res, next) {
-  var users;
+exports.updateMe = catchAsync(function _callee(req, res, next) {
+  var filteredBody, updatedUser;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.next = 2;
-          return regeneratorRuntime.awrap(User.find());
-
-        case 2:
-          users = _context.sent;
-          // SEND RESPONSE
-          res.status(200).json({
-            status: 'success',
-            results: users.length,
-            data: {
-              users: users
-            }
-          });
-
-        case 4:
-        case "end":
-          return _context.stop();
-      }
-    }
-  });
-});
-exports.updateMe = catchAsync(function _callee2(req, res, next) {
-  var filteredBody, updatedUser;
-  return regeneratorRuntime.async(function _callee2$(_context2) {
-    while (1) {
-      switch (_context2.prev = _context2.next) {
-        case 0:
           if (!(req.body.password || req.body.passwordConfirm)) {
-            _context2.next = 2;
+            _context.next = 2;
             break;
           }
 
-          return _context2.abrupt("return", next(new AppError('This route is not for password updates. Please use /updateMyPassword', 400)));
+          return _context.abrupt("return", next(new AppError('This route is not for password updates. Please use /updateMyPassword', 400)));
 
         case 2:
           // 2) Filtered out unwanted field names that are not allowed to be updated
           filteredBody = filterObj(req.body, 'name', 'email'); // 3) Update user document
 
-          _context2.next = 5;
+          _context.next = 5;
           return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, filteredBody, {
             "new": true,
             runValidators: true
           }));
 
         case 5:
-          updatedUser = _context2.sent;
+          updatedUser = _context.sent;
           res.status(200).json({
             status: 'success',
             user: updatedUser
@@ -79,17 +52,17 @@ exports.updateMe = catchAsync(function _callee2(req, res, next) {
 
         case 7:
         case "end":
-          return _context2.stop();
+          return _context.stop();
       }
     }
   });
 });
-exports.deleteMe = catchAsync(function _callee3(req, res, next) {
-  return regeneratorRuntime.async(function _callee3$(_context3) {
+exports.deleteMe = catchAsync(function _callee2(req, res, next) {
+  return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
-      switch (_context3.prev = _context3.next) {
+      switch (_context2.prev = _context2.next) {
         case 0:
-          _context3.next = 2;
+          _context2.next = 2;
           return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, {
             active: false
           }));
@@ -102,12 +75,11 @@ exports.deleteMe = catchAsync(function _callee3(req, res, next) {
 
         case 3:
         case "end":
-          return _context3.stop();
+          return _context2.stop();
       }
     }
   });
 });
-exports.getUser = factory.getOne(User);
 
 exports.createUser = function (req, res) {
   res.status(500).json({
@@ -115,8 +87,10 @@ exports.createUser = function (req, res) {
     requestedAt: req.requestTime,
     message: 'This route is not yet defined! Please use sign up instead😏'
   });
-}; // Do NOT update passwords with this
+};
 
+exports.getUser = factory.getOne(User);
+exports.getAllUsers = factory.getAll(User); // Do NOT update passwords with this
 
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
