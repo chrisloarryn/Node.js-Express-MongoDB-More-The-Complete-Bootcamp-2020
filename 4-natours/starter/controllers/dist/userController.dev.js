@@ -20,6 +20,11 @@ var filterObj = function filterObj(obj) {
   return newObj;
 };
 
+exports.getMe = function (req, res, next) {
+  req.params.id = req.user.id;
+  next();
+};
+
 exports.updateMe = catchAsync(function _callee(req, res, next) {
   var filteredBody, updatedUser;
   return regeneratorRuntime.async(function _callee$(_context) {
