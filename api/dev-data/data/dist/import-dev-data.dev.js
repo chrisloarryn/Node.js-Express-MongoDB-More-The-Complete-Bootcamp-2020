@@ -8,6 +8,10 @@ var mongoose = require('mongoose');
 
 var Tour = require('./../../models/tourModel');
 
+var User = require('./../../models/userModel');
+
+var Review = require('./../../models/reviewModel');
+
 dotenv.config({
   path: './config.env'
 }); // DB is to connect to atlas.
@@ -23,7 +27,9 @@ mongoose.connect(DB, {
   console.log("DB Connection Successfully \uD83D\uDE01");
 }); // READ JSON FILE
 
-var tours = JSON.parse(fs.readFileSync("".concat(__dirname, "/tours.json"), 'utf-8')); // IMPORT DATA INTO DB
+var tours = JSON.parse(fs.readFileSync("".concat(__dirname, "/tours.json"), 'utf-8'));
+var users = JSON.parse(fs.readFileSync("".concat(__dirname, "/users.json"), 'utf-8'));
+var reviews = JSON.parse(fs.readFileSync("".concat(__dirname, "/reviews.json"), 'utf-8')); // IMPORT DATA INTO DB
 
 var importData = function importData() {
   return regeneratorRuntime.async(function importData$(_context) {
@@ -35,24 +41,32 @@ var importData = function importData() {
           return regeneratorRuntime.awrap(Tour.create(tours));
 
         case 3:
+          _context.next = 5;
+          return regeneratorRuntime.awrap(User.create(users));
+
+        case 5:
+          _context.next = 7;
+          return regeneratorRuntime.awrap(Review.create(reviews));
+
+        case 7:
           console.log("Data successfully loaded! \uD83D\uDE01");
-          _context.next = 9;
+          _context.next = 13;
           break;
 
-        case 6:
-          _context.prev = 6;
+        case 10:
+          _context.prev = 10;
           _context.t0 = _context["catch"](0);
           console.log(_context.t0);
 
-        case 9:
+        case 13:
           process.exit();
 
-        case 10:
+        case 14:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 6]]);
+  }, null, null, [[0, 10]]);
 }; // DELETE ALL DATA FROM DB
 
 
@@ -66,24 +80,32 @@ var deleteData = function deleteData() {
           return regeneratorRuntime.awrap(Tour.deleteMany());
 
         case 3:
+          _context2.next = 5;
+          return regeneratorRuntime.awrap(User.deleteMany());
+
+        case 5:
+          _context2.next = 7;
+          return regeneratorRuntime.awrap(Review.deleteMany());
+
+        case 7:
           console.log("Data successfully deleted! \uD83D\uDE0F");
-          _context2.next = 9;
+          _context2.next = 13;
           break;
 
-        case 6:
-          _context2.prev = 6;
+        case 10:
+          _context2.prev = 10;
           _context2.t0 = _context2["catch"](0);
           console.log(_context2.t0);
 
-        case 9:
+        case 13:
           process.exit();
 
-        case 10:
+        case 14:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 6]]);
+  }, null, null, [[0, 10]]);
 }; // EXPORT DATA INTO DB
 
 
