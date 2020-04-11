@@ -90,8 +90,10 @@ const tourSchema = new mongoose.Schema(
       },
       coordinates: [Number],
       address: String,
-      description: String,
-      locations: {
+      description: String
+    },
+    locations: [
+      {
         type: {
           type: String,
           default: 'Point',
@@ -102,7 +104,7 @@ const tourSchema = new mongoose.Schema(
         description: String,
         day: Number
       }
-    },
+    ],
     guides: [
       {
         type: mongoose.Schema.ObjectId,

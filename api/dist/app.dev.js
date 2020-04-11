@@ -1,5 +1,7 @@
 "use strict";
 
+var path = require('path');
+
 var express = require('express');
 
 var morgan = require('morgan');
@@ -24,8 +26,14 @@ var userRouter = require('./routes/userRoutes');
 
 var reviewRouter = require('./routes/reviewRoutes');
 
-var app = express(); // 1) GLOBAL MIDDLEWARE
-// Set security HTTP headers
+var viewRouter = require('./routes/viewRoutes');
+
+var app = express();
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views')); // 1) GLOBAL MIDDLEWARE
+// Serving static files
+
+app.use(express["static"](path.join(__dirname, 'public'))); // Set security HTTP headers
 
 app.use(helmet()); // Development
 
@@ -53,9 +61,7 @@ app.use(xss()); // Prevent parameter pollution
 
 app.use(hpp({
   whitelist: ['duration', 'ratingsAverage', 'ratingsQuantity', 'maxGroupSize', 'difficulty', 'price']
-})); // Serving static files
-
-app.use(express["static"]("".concat(__dirname, "/public"))); // Test middleware
+})); // Test middleware
 
 app.use(function (req, res, next) {
   req.requestTime = new Date().toISOString(); // console.log(req.headers);
@@ -63,6 +69,7 @@ app.use(function (req, res, next) {
   next();
 }); // 2) ROUTES
 
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
