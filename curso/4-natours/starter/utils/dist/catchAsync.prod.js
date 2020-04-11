@@ -1,1 +1,0 @@
-"use strict";module.exports=function(u){return function(t,c,n){u(t,c,n).catch(n)}};
