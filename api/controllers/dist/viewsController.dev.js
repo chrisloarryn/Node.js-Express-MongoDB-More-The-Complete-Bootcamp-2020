@@ -47,15 +47,14 @@ exports.getTour = catchAsync(function _callee2(req, res) {
 
         case 2:
           tour = _context2.sent;
-          console.log(tour.reviews[0].user); // 2)Build template
+          // 2)Build template
           // 3) Render that template using data from 1)
-
           res.status(200).render('tour', {
             title: "".concat(tour.name, " Tour"),
             tour: tour
           });
 
-        case 5:
+        case 4:
         case "end":
           return _context2.stop();
       }
