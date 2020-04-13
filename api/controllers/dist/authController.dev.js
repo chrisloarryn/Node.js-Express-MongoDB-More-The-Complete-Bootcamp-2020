@@ -125,6 +125,17 @@ exports.login = catchAsync(function _callee2(req, res, next) {
     }
   });
 });
+
+exports.logout = function (req, res) {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+  res.status(200).json({
+    status: 'success'
+  });
+};
+
 exports.protect = catchAsync(function _callee3(req, res, next) {
   var token, decoded, currentUser;
   return regeneratorRuntime.async(function _callee3$(_context3) {
@@ -175,9 +186,10 @@ exports.protect = catchAsync(function _callee3(req, res, next) {
         case 13:
           // GRANT ACCESS TO PROTECTED ROUTE
           req.user = currentUser;
+          res.locals.user = currentUser;
           next();
 
-        case 15:
+        case 16:
         case "end":
           return _context3.stop();
       }
@@ -185,58 +197,64 @@ exports.protect = catchAsync(function _callee3(req, res, next) {
   });
 }); // Only for rendered pages, no errors!
 
-exports.isLoggedIn = catchAsync(function _callee4(req, res, next) {
+exports.isLoggedIn = function _callee4(req, res, next) {
   var decoded, currentUser;
   return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
           if (!req.cookies.jwt) {
-            _context4.next = 13;
+            _context4.next = 19;
             break;
           }
 
-          _context4.next = 3;
+          _context4.prev = 1;
+          _context4.next = 4;
           return regeneratorRuntime.awrap(promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET));
 
-        case 3:
+        case 4:
           decoded = _context4.sent;
-          _context4.next = 6;
+          _context4.next = 7;
           return regeneratorRuntime.awrap(User.findById(decoded.id));
 
-        case 6:
+        case 7:
           currentUser = _context4.sent;
 
           if (currentUser) {
-            _context4.next = 9;
+            _context4.next = 10;
             break;
           }
 
           return _context4.abrupt("return", next());
 
-        case 9:
+        case 10:
           if (!currentUser.changedPasswordAfter(decoded.iat)) {
-            _context4.next = 11;
+            _context4.next = 12;
             break;
           }
 
           return _context4.abrupt("return", next());
 
-        case 11:
+        case 12:
           // THERE IS A LOGGED IN USER
           res.locals.user = currentUser;
           return _context4.abrupt("return", next());
 
-        case 13:
+        case 16:
+          _context4.prev = 16;
+          _context4.t0 = _context4["catch"](1);
+          return _context4.abrupt("return", next());
+
+        case 19:
           next();
 
-        case 14:
+        case 20:
         case "end":
           return _context4.stop();
       }
     }
-  });
-});
+  }, null, null, [[1, 16]]);
+};
 
 exports.restrictTo = function () {
   for (var _len = arguments.length, roles = new Array(_len), _key = 0; _key < _len; _key++) {

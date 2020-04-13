@@ -6,6 +6,8 @@ var User = require('./../models/userModel');
 
 var catchAsync = require('./../utils/catchAsync');
 
+var AppError = require('./../utils/appError');
+
 exports.getOverview = catchAsync(function _callee(req, res, next) {
   var tours;
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -47,6 +49,15 @@ exports.getTour = catchAsync(function _callee2(req, res, next) {
 
         case 2:
           tour = _context2.sent;
+
+          if (tour) {
+            _context2.next = 5;
+            break;
+          }
+
+          return _context2.abrupt("return", next(new AppError('There is no tour with that name.', 404)));
+
+        case 5:
           // 2)Build template
           // 3) Render that template using data from 1)
           res.status(200).render('tour', {
@@ -54,7 +65,7 @@ exports.getTour = catchAsync(function _callee2(req, res, next) {
             tour: tour
           });
 
-        case 4:
+        case 6:
         case "end":
           return _context2.stop();
       }
@@ -65,5 +76,11 @@ exports.getTour = catchAsync(function _callee2(req, res, next) {
 exports.getLoginForm = function (req, res) {
   res.status(200).render('login', {
     title: 'Log into your account'
+  });
+};
+
+exports.getAccount = function (req, res) {
+  res.status(200).render('account', {
+    title: 'Your account'
   });
 };

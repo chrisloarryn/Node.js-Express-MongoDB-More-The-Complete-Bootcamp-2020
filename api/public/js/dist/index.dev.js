@@ -7,7 +7,8 @@ var _mapbox = require("./mapbox");
 var _login = require("./login");
 
 var mapBox = document.getElementById('map');
-var loginForm = document.querySelector('.form'); // VALUES
+var loginForm = document.querySelector('.form');
+var logOutBtn = document.querySelector('.nav__el--logout'); // VALUES
 // DELEGATION
 
 if (mapBox) {
@@ -23,3 +24,5 @@ if (loginForm) {
     (0, _login.login)(email, password);
   });
 }
+
+if (_login.logout) logOutBtn.addEventListener('click', _login.logout);
