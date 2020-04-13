@@ -1,3 +1,4 @@
 1-node-farm/starter/node_modules
 4-natours/starter/node_modules
 /api/node_modules
+/api/.cache

@@ -16,6 +16,8 @@ var xss = require('xss-clean');
 
 var hpp = require('hpp');
 
+var cookieParser = require('cookie-parser');
+
 var AppError = require('./utils/appError');
 
 var globalErrorHandler = require('./controllers/errorController');
@@ -52,7 +54,8 @@ app.use('/api', limiter); // Body parser, reading data from body into req.body
 
 app.use(express.json({
   limit: '10kb'
-})); // Data sanitization against NoSQL query injection
+}));
+app.use(cookieParser()); // Data sanitization against NoSQL query injection
 // // { "email": { "$gt": ""}, "password": "pass1234" }
 
 app.use(mongoSanitize()); // Data sanitization against XXS (cross site scripting attacks)
@@ -64,7 +67,7 @@ app.use(hpp({
 })); // Test middleware
 
 app.use(function (req, res, next) {
-  req.requestTime = new Date().toISOString(); // console.log(req.headers);
+  req.requestTime = new Date().toISOString(); // console.log(req.cookies);
 
   next();
 }); // 2) ROUTES

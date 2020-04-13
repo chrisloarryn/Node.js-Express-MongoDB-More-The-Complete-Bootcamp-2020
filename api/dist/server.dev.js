@@ -17,9 +17,9 @@ dotenv.config({
 var app = require('./app'); // DB is to connect to atlas.
 
 
-var DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD); // || process.env.DATABASE_LOCAL
+var DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD); // DB || process.env.DATABASE_LOCAL
 
-mongoose.connect(DB, {
+mongoose.connect(process.env.DATABASE_LOCAL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,

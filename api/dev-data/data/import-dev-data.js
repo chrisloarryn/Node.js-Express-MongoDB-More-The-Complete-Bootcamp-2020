@@ -15,9 +15,9 @@ const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 )
-// || process.env.DATABASE_LOCAL
+// DB || process.env.DATABASE_LOCAL
 mongoose
-  .connect(DB, {
+  .connect(process.env.DATABASE_LOCAL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,

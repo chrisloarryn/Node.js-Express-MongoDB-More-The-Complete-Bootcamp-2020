@@ -6,7 +6,7 @@ var User = require('./../models/userModel');
 
 var catchAsync = require('./../utils/catchAsync');
 
-exports.getOverview = catchAsync(function _callee(req, res) {
+exports.getOverview = catchAsync(function _callee(req, res, next) {
   var tours;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -31,7 +31,7 @@ exports.getOverview = catchAsync(function _callee(req, res) {
     }
   });
 });
-exports.getTour = catchAsync(function _callee2(req, res) {
+exports.getTour = catchAsync(function _callee2(req, res, next) {
   var tour;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
@@ -61,3 +61,9 @@ exports.getTour = catchAsync(function _callee2(req, res) {
     }
   });
 });
+
+exports.getLoginForm = function (req, res) {
+  res.status(200).render('login', {
+    title: 'Log into your account'
+  });
+};
