@@ -84,3 +84,33 @@ exports.getAccount = function (req, res) {
     title: 'Your account'
   });
 };
+
+exports.updateUserData = catchAsync(function _callee3(req, res, next) {
+  var updatedUser;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 2;
+          return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, {
+            name: req.body.name,
+            email: req.body.email
+          }, {
+            "new": true,
+            runValidators: true
+          }));
+
+        case 2:
+          updatedUser = _context3.sent;
+          res.status(200).render('account', {
+            title: 'Your account',
+            user: updatedUser
+          });
+
+        case 4:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+});
