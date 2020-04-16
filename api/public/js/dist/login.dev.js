@@ -21,9 +21,8 @@ var login = function login(email, password) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          console.log(email, password);
-          _context.prev = 1;
-          _context.next = 4;
+          _context.prev = 0;
+          _context.next = 3;
           return regeneratorRuntime.awrap((0, _axios["default"])({
             method: 'POST',
             url: "http://".concat(host, ":").concat(port, "/api/v1/users/login"),
@@ -33,7 +32,7 @@ var login = function login(email, password) {
             }
           }));
 
-        case 4:
+        case 3:
           res = _context.sent;
 
           if (res.data.status === 'success') {
@@ -41,27 +40,27 @@ var login = function login(email, password) {
             window.setTimeout(function () {
               location.assign('/');
             }, 1500);
-          }
+          } // console.log(res)
 
-          console.log(res);
-          _context.next = 13;
+
+          _context.next = 11;
           break;
 
-        case 9:
-          _context.prev = 9;
-          _context.t0 = _context["catch"](1);
+        case 7:
+          _context.prev = 7;
+          _context.t0 = _context["catch"](0);
           error = {
             entireError: _context.t0,
             err: _context.t0.response.data
           };
           (0, _alerts.showAlert)('error', error.err.message);
 
-        case 13:
+        case 11:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[1, 9]]);
+  }, null, null, [[0, 7]]);
 };
 
 exports.login = login;
