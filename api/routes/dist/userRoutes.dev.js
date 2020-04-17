@@ -1,18 +1,16 @@
 "use strict";
 
-var express = require('express'); // const {
-//   getAllUsers,
-//   createUser,
-//   getUser,
-//   updateUser,
-//   deleteUser
-// } = require('./../controllers/userController')
+var express = require('express');
 
+var multer = require('multer');
 
 var userController = require('./../controllers/userController');
 
 var authController = require('./../controllers/authController');
 
+var upload = multer({
+  dest: 'public/img/users'
+});
 var router = express.Router();
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
@@ -23,7 +21,7 @@ router.patch('/resetPassword/:token', authController.resetPassword); // Protect 
 router.use(authController.protect);
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, userController.getUser);
-router.patch('/updateMe', userController.updateMe);
+router.patch('/updateMe', upload.single('photo'), userController.updateMe);
 router["delete"]('/deleteMe', userController.deleteMe); // Routes protected and restricted to admin
 
 router.use(authController.restrictTo('admin'));

@@ -31,31 +31,34 @@ exports.updateMe = catchAsync(function _callee(req, res, next) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
+          console.log(req.file);
+          console.log(req.body); // 1) Create error if user POSTs password data
+
           if (!(req.body.password || req.body.passwordConfirm)) {
-            _context.next = 2;
+            _context.next = 4;
             break;
           }
 
           return _context.abrupt("return", next(new AppError('This route is not for password updates. Please use /updateMyPassword', 400)));
 
-        case 2:
+        case 4:
           // 2) Filtered out unwanted field names that are not allowed to be updated
           filteredBody = filterObj(req.body, 'name', 'email'); // 3) Update user document
 
-          _context.next = 5;
+          _context.next = 7;
           return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, filteredBody, {
             "new": true,
             runValidators: true
           }));
 
-        case 5:
+        case 7:
           updatedUser = _context.sent;
           res.status(200).json({
             status: 'success',
             user: updatedUser
           });
 
-        case 7:
+        case 9:
         case "end":
           return _context.stop();
       }

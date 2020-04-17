@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
@@ -23,7 +23,6 @@ app.set('views', path.join(__dirname, 'views'))
 // 1) GLOBAL MIDDLEWARE
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
-
 
 // Set security HTTP headers
 app.use(helmet())
