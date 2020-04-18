@@ -8,6 +8,10 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+var multer = require('multer');
+
+var sharp = require('sharp');
+
 var Tour = require('./../models/tourModel');
 
 var catchAsync = require('./../utils/catchAsync');
@@ -18,10 +22,91 @@ var AppError = require('./../utils/appError');
 
 var chalk = require('chalk');
 
-exports.aliasTopTours = function _callee(req, res, next) {
-  return regeneratorRuntime.async(function _callee$(_context) {
+var multerStorage = multer.memoryStorage();
+
+var multerFilter = function multerFilter(req, file, cb) {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
+
+var upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
+});
+exports.uploadTourImages = upload.fields([{
+  name: 'imageCover',
+  maxCount: 1
+}, {
+  name: 'images',
+  maxCount: 3
+}]); // upload.single('image')     req.file
+// upload.array('images', 5)  req.files
+
+exports.resizeTourImages = catchAsync(function _callee2(req, res, next) {
+  return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
-      switch (_context.prev = _context.next) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          if (!(!req.files.imageCover || !req.files.images)) {
+            _context2.next = 2;
+            break;
+          }
+
+          return _context2.abrupt("return", next());
+
+        case 2:
+          // 1) Cover image
+          req.body.imageCover = "tour-".concat(req.params.id, "-").concat(Date.now(), "-cover.jpeg");
+          _context2.next = 5;
+          return regeneratorRuntime.awrap(sharp(req.files.imageCover[0].buffer).resize(2000, 1333).toFormat('jpeg').jpeg({
+            quality: 90
+          }).toFile("public/img/tours/".concat(req.body.imageCover)));
+
+        case 5:
+          // 2) Images
+          req.body.images = [];
+          _context2.next = 8;
+          return regeneratorRuntime.awrap(Promise.all(req.files.images.map(function _callee(file, i) {
+            var filename;
+            return regeneratorRuntime.async(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    filename = "tour-".concat(req.params.id, "-").concat(Date.now(), "-cover").concat(i + 1);
+                    _context.next = 3;
+                    return regeneratorRuntime.awrap(sharp(file.buffer).resize(2000, 1333).toFormat('jpeg').jpeg({
+                      quality: 90
+                    }).toFile("public/img/tours/".concat(filename)));
+
+                  case 3:
+                    req.body.images.push(filename);
+
+                  case 4:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            });
+          })));
+
+        case 8:
+          next();
+
+        case 9:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  });
+});
+
+exports.aliasTopTours = function _callee3(req, res, next) {
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
         case 0:
           req.query.limit = '5';
           req.query.sort = '-ratingsAverage,price';
@@ -30,7 +115,7 @@ exports.aliasTopTours = function _callee(req, res, next) {
 
         case 4:
         case "end":
-          return _context.stop();
+          return _context3.stop();
       }
     }
   });
@@ -43,13 +128,13 @@ exports.getTour = factory.getOne(Tour, {
 exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
-exports.getTourStats = catchAsync(function _callee2(req, res, next) {
+exports.getTourStats = catchAsync(function _callee4(req, res, next) {
   var stats;
-  return regeneratorRuntime.async(function _callee2$(_context2) {
+  return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
-      switch (_context2.prev = _context2.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
-          _context2.next = 2;
+          _context4.next = 2;
           return regeneratorRuntime.awrap(Tour.aggregate([{
             $match: {
               ratingsAverage: {
@@ -92,7 +177,7 @@ exports.getTourStats = catchAsync(function _callee2(req, res, next) {
           ]));
 
         case 2:
-          stats = _context2.sent;
+          stats = _context4.sent;
           res.status(200).json({
             status: 'success',
             data: {
@@ -102,20 +187,20 @@ exports.getTourStats = catchAsync(function _callee2(req, res, next) {
 
         case 4:
         case "end":
-          return _context2.stop();
+          return _context4.stop();
       }
     }
   });
 });
-exports.getMonthlyPlan = catchAsync(function _callee3(req, res, next) {
+exports.getMonthlyPlan = catchAsync(function _callee5(req, res, next) {
   var year, plan;
-  return regeneratorRuntime.async(function _callee3$(_context3) {
+  return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
-      switch (_context3.prev = _context3.next) {
+      switch (_context5.prev = _context5.next) {
         case 0:
           year = req.params.year * 1; // 2021
 
-          _context3.next = 3;
+          _context5.next = 3;
           return regeneratorRuntime.awrap(Tour.aggregate([{
             $unwind: '$startDates'
           }, {
@@ -155,7 +240,7 @@ exports.getMonthlyPlan = catchAsync(function _callee3(req, res, next) {
           ]));
 
         case 3:
-          plan = _context3.sent;
+          plan = _context5.sent;
           res.status(200).json({
             status: 'success',
             data: {
@@ -165,7 +250,7 @@ exports.getMonthlyPlan = catchAsync(function _callee3(req, res, next) {
 
         case 5:
         case "end":
-          return _context3.stop();
+          return _context5.stop();
       }
     }
   });
@@ -176,12 +261,12 @@ exports.getMonthlyPlan = catchAsync(function _callee3(req, res, next) {
 // /tour-distance?distance=233&center=-40,45,unit=mi
 // /tour-distance/233/center/-40,45/unit/mi
 
-exports.getToursWithin = catchAsync(function _callee4(req, res, next) {
+exports.getToursWithin = catchAsync(function _callee6(req, res, next) {
   var _req$params, distance, latlng, unit, _latlng$split, _latlng$split2, lat, lng, radius, tours;
 
-  return regeneratorRuntime.async(function _callee4$(_context4) {
+  return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
           _req$params = req.params, distance = _req$params.distance, latlng = _req$params.latlng, unit = _req$params.unit;
           _latlng$split = latlng.split(','), _latlng$split2 = _slicedToArray(_latlng$split, 2), lat = _latlng$split2[0], lng = _latlng$split2[1];
@@ -191,7 +276,7 @@ exports.getToursWithin = catchAsync(function _callee4(req, res, next) {
             next(new AppError('Please provide a latitude and longitude in the format lat,lng', 400));
           }
 
-          _context4.next = 6;
+          _context6.next = 6;
           return regeneratorRuntime.awrap(Tour.find({
             startLocation: {
               $geoWithin: {
@@ -201,7 +286,7 @@ exports.getToursWithin = catchAsync(function _callee4(req, res, next) {
           }));
 
         case 6:
-          tours = _context4.sent;
+          tours = _context6.sent;
           res.status(200).json({
             status: 'success',
             results: tours.length,
@@ -212,17 +297,17 @@ exports.getToursWithin = catchAsync(function _callee4(req, res, next) {
 
         case 8:
         case "end":
-          return _context4.stop();
+          return _context6.stop();
       }
     }
   });
 });
-exports.getDistances = catchAsync(function _callee5(req, res, next) {
+exports.getDistances = catchAsync(function _callee7(req, res, next) {
   var _req$params2, latlng, unit, _latlng$split3, _latlng$split4, lat, lng, multiplier, distances;
 
-  return regeneratorRuntime.async(function _callee5$(_context5) {
+  return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
           _req$params2 = req.params, latlng = _req$params2.latlng, unit = _req$params2.unit;
           _latlng$split3 = latlng.split(','), _latlng$split4 = _slicedToArray(_latlng$split3, 2), lat = _latlng$split4[0], lng = _latlng$split4[1];
@@ -232,7 +317,7 @@ exports.getDistances = catchAsync(function _callee5(req, res, next) {
             next(new AppError('Please provide a latitude and longitude in the format lat,lng', 400));
           }
 
-          _context5.next = 6;
+          _context7.next = 6;
           return regeneratorRuntime.awrap(Tour.aggregate([{
             $geoNear: {
               near: {
@@ -250,7 +335,7 @@ exports.getDistances = catchAsync(function _callee5(req, res, next) {
           }]));
 
         case 6:
-          distances = _context5.sent;
+          distances = _context7.sent;
           res.status(200).json({
             status: 'success',
             data: {
@@ -260,7 +345,7 @@ exports.getDistances = catchAsync(function _callee5(req, res, next) {
 
         case 8:
         case "end":
-          return _context5.stop();
+          return _context7.stop();
       }
     }
   });

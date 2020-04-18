@@ -2,3 +2,4 @@
 4-natours/starter/node_modules
 /api/node_modules
 /api/.cache
+/api/**/dist/*

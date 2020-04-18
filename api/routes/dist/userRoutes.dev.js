@@ -21,7 +21,7 @@ router.patch('/resetPassword/:token', authController.resetPassword); // Protect 
 router.use(authController.protect);
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, userController.getUser);
-router.patch('/updateMe', upload.single('photo'), userController.updateMe);
+router.patch('/updateMe', userController.uploadUserPhoto, userController.resizeUserPhoto, userController.updateMe);
 router["delete"]('/deleteMe', userController.deleteMe); // Routes protected and restricted to admin
 
 router.use(authController.restrictTo('admin'));
