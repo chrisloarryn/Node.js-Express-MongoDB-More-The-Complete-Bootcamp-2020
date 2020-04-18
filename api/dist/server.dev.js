@@ -19,7 +19,7 @@ var app = require('./app'); // DB is to connect to atlas.
 
 var DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD); // DB || process.env.DATABASE_LOCAL
 
-mongoose.connect(process.env.DATABASE_LOCAL, {
+mongoose.connect(DB, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,

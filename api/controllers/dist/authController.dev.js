@@ -13,7 +13,7 @@ var catchAsync = require('./../utils/catchAsync');
 
 var AppError = require('./../utils/appError');
 
-var sendEmail = require('./../utils/email');
+var Email = require('./../utils/email');
 
 var signToken = function signToken(id) {
   return jwt.sign({
@@ -43,7 +43,7 @@ var createSendToken = function createSendToken(user, statusCode, res) {
 };
 
 exports.signup = catchAsync(function _callee(req, res, next) {
-  var newUser;
+  var newUser, url;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -60,9 +60,16 @@ exports.signup = catchAsync(function _callee(req, res, next) {
 
         case 2:
           newUser = _context.sent;
+          // const url = `http://127.0.0.1:3000/me`
+          url = "".concat(req.protocol, "://").concat(req.get('host'), "/me");
+          console.log(url);
+          _context.next = 7;
+          return regeneratorRuntime.awrap(new Email(newUser, url).sendWelcome());
+
+        case 7:
           createSendToken(newUser, 201, res);
 
-        case 4:
+        case 8:
         case "end":
           return _context.stop();
       }
@@ -272,7 +279,7 @@ exports.restrictTo = function () {
 };
 
 exports.forgotPassword = catchAsync(function _callee5(req, res, next) {
-  var user, resetToken, resetURL, message;
+  var user, resetToken, resetURL;
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
@@ -301,44 +308,38 @@ exports.forgotPassword = catchAsync(function _callee5(req, res, next) {
           }));
 
         case 8:
-          // 3) Send it to user's email
+          _context5.prev = 8;
           resetURL = "".concat(req.protocol, "://").concat(req.get('host'), "/api/v1/users/resetPassword/").concat(resetToken);
-          message = "Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ".concat(resetURL, ".\n If you didn't forget your password, please ignore this email");
-          _context5.prev = 10;
-          _context5.next = 13;
-          return regeneratorRuntime.awrap(sendEmail({
-            email: user.email,
-            subject: 'Your password reset token (valid for 10 min)',
-            message: message
-          }));
+          _context5.next = 12;
+          return regeneratorRuntime.awrap(new Email(user, resetURL).sendPasswordReset());
 
-        case 13:
+        case 12:
           res.status(200).json({
             status: 'success',
             message: "Token sent to email!"
           });
-          _context5.next = 23;
+          _context5.next = 22;
           break;
 
-        case 16:
-          _context5.prev = 16;
-          _context5.t0 = _context5["catch"](10);
+        case 15:
+          _context5.prev = 15;
+          _context5.t0 = _context5["catch"](8);
           user.passwordResetToken = undefined;
           user.passwordResetExpires = undefined;
-          _context5.next = 22;
+          _context5.next = 21;
           return regeneratorRuntime.awrap(user.save({
             validateBeforeSave: false
           }));
 
-        case 22:
+        case 21:
           return _context5.abrupt("return", next(new AppError('There was an error sending the email. Try again later!', 500)));
 
-        case 23:
+        case 22:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[10, 16]]);
+  }, null, null, [[8, 15]]);
 });
 exports.resetPassword = catchAsync(function _callee6(req, res, next) {
   var hashedToken, user;
