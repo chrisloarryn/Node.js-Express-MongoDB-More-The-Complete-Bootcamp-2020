@@ -27,6 +27,7 @@ mongoose
   })
   .then(con => {
     console.log(`DB Connection Successfully! 😁`)
+    // console.log(process.env)
   })
 
 // console.log(process.env)

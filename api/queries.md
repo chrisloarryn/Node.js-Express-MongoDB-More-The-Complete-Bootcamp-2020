@@ -51,6 +51,13 @@ tours
 { "_id" : ObjectId("5e815e6c34c8dea5b2faa78e"), "name" : "The sea explorer" }
 { "_id" : ObjectId("5e815e6c34c8dea5b2faa78f"), "name" : "The Snow Adventurer"}
 
+
+## FIND EMAILS or Condition
+> db.tours.find({ $or: [{price: {$gt: 500}}, {rating: {$gte: 4.8}}] }, {name: 1})
+> db.tours.find({ email: { $in: ["test8@natours.io", "test9@natours.io"] } })
+> db.users.find({$or: [{email: "test9@natours.io"}, {email: "test8@natours.io"}]})
+
+
 ## Update one tour with filter
 > db.tours.updateOne({name: "The Snow Adventurer"}, {$set: {price: 597}})
 > { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }

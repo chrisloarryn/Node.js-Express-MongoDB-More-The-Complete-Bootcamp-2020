@@ -10,8 +10,7 @@ var nodemailer = require('nodemailer');
 
 var pug = require('pug');
 
-var htmlToText = require('html-to-text'); // new Email(user, url).sendWelcome()
-
+var htmlToText = require('html-to-text');
 
 module.exports =
 /*#__PURE__*/
@@ -22,26 +21,32 @@ function () {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = "Crist\xF3bal Contreras <".concat(process.env.EMAIL_FROM, ">");
+    this.from = "Christopher Low <".concat(process.env.EMAIL_FROM, ">");
   }
 
   _createClass(Email, [{
     key: "newTransport",
     value: function newTransport() {
-      if (process.env.NODE_ENV === 'production') {
+      if (process.env.NODE_ENV.trim() === 'production') {
         // Sendgrid
-        return 1;
+        return nodemailer.createTransport({
+          service: 'SendGrid',
+          // host: process.env.SENDGRID_HOST,
+          // port: process.env.SENDGRID_PORT,
+          auth: {
+            user: process.env.SENDGRID_USERNAME,
+            pass: process.env.SENDGRID_PASSWORD
+          }
+        });
       }
 
       return nodemailer.createTransport({
-        // service: 'Gmail', // Gmail, Yahoo, etc could be spam  (sendgrid better)
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
         auth: {
           user: process.env.EMAIL_USERNAME,
           pass: process.env.EMAIL_PASSWORD
-        } // Activate in gmail "less secure app" options
-
+        }
       });
     } // Send the actual email
 
@@ -53,12 +58,12 @@ function () {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              // 1) Render HTML based on pug template
+              // 1) Render HTML based on a pug template
               html = pug.renderFile("".concat(__dirname, "/../views/email/").concat(template, ".pug"), {
                 firstName: this.firstName,
                 url: this.url,
                 subject: subject
-              }); // 2) Define the email options
+              }); // 2) Define email options
 
               mailOptions = {
                 from: this.from,
@@ -103,7 +108,7 @@ function () {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return regeneratorRuntime.awrap(this.send('passwordReset', 'Your password reset token (valid for only 10 min)'));
+              return regeneratorRuntime.awrap(this.send('passwordReset', 'Your password reset token (valid for only 10 minutes)'));
 
             case 2:
             case "end":

@@ -8,12 +8,15 @@ var _login = require("./login");
 
 var _updateSettings = require("./updateSettings");
 
+var _stripe = require("./stripe");
+
 /* eslint-disable */
 var mapBox = document.getElementById('map');
 var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout');
 var userDataForm = document.querySelector('.form-user-data');
-var userPasswordForm = document.querySelector('.form-user-password'); // DELEGATION
+var userPasswordForm = document.querySelector('.form-user-password');
+var bookBtn = document.getElementById('book-tour'); // DELEGATION
 
 if (mapBox) {
   var locations = JSON.parse(mapBox.dataset.locations);
@@ -66,3 +69,11 @@ if (userPasswordForm) userPasswordForm.addEventListener('submit', function _call
     }
   });
 });
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', function (e) {
+    e.target.textContent = 'Processing...';
+    var tourId = e.target.dataset.tourId;
+    (0, _stripe.bookTour)(tourId);
+  });
+}

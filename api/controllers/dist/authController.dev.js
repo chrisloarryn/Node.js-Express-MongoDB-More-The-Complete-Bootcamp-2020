@@ -60,16 +60,15 @@ exports.signup = catchAsync(function _callee(req, res, next) {
 
         case 2:
           newUser = _context.sent;
-          // const url = `http://127.0.0.1:3000/me`
-          url = "".concat(req.protocol, "://").concat(req.get('host'), "/me");
-          console.log(url);
-          _context.next = 7;
+          url = "".concat(req.protocol, "://").concat(req.get('host'), "/me"); // console.log(url);
+
+          _context.next = 6;
           return regeneratorRuntime.awrap(new Email(newUser, url).sendWelcome());
 
-        case 7:
+        case 6:
           createSendToken(newUser, 201, res);
 
-        case 8:
+        case 7:
         case "end":
           return _context.stop();
       }

@@ -4,6 +4,8 @@ var Tour = require('./../models/tourModel');
 
 var User = require('./../models/userModel');
 
+var Booking = require('./../models/bookingModel');
+
 var catchAsync = require('./../utils/catchAsync');
 
 var AppError = require('./../utils/appError');
@@ -85,13 +87,51 @@ exports.getAccount = function (req, res) {
   });
 };
 
-exports.updateUserData = catchAsync(function _callee3(req, res, next) {
-  var updatedUser;
+exports.getMyTours = catchAsync(function _callee3(req, res, next) {
+  var bookings, tourIDs, tours;
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
+          return regeneratorRuntime.awrap(Booking.find({
+            user: req.user.id
+          }));
+
+        case 2:
+          bookings = _context3.sent;
+          // 2) Find tour with the returned IDs
+          tourIDs = bookings.map(function (el) {
+            return el.tour;
+          });
+          _context3.next = 6;
+          return regeneratorRuntime.awrap(Tour.find({
+            _id: {
+              $in: tourIDs
+            }
+          }));
+
+        case 6:
+          tours = _context3.sent;
+          res.status(200).render('overview', {
+            title: 'My Tours',
+            tours: tours
+          });
+
+        case 8:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+});
+exports.updateUserData = catchAsync(function _callee4(req, res, next) {
+  var updatedUser;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.next = 2;
           return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.user.id, {
             name: req.body.name,
             email: req.body.email
@@ -101,7 +141,7 @@ exports.updateUserData = catchAsync(function _callee3(req, res, next) {
           }));
 
         case 2:
-          updatedUser = _context3.sent;
+          updatedUser = _context4.sent;
           res.status(200).render('account', {
             title: 'Your account',
             user: updatedUser
@@ -109,7 +149,7 @@ exports.updateUserData = catchAsync(function _callee3(req, res, next) {
 
         case 4:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
     }
   });

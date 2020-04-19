@@ -25,7 +25,7 @@ mongoose.connect(DB, {
   useFindAndModify: false,
   useUnifiedTopology: true
 }).then(function (con) {
-  console.log("DB Connection Successfully! \uD83D\uDE01");
+  console.log("DB Connection Successfully! \uD83D\uDE01"); // console.log(process.env)
 }); // console.log(process.env)
 
 var port = process.env.PORT || 3000;

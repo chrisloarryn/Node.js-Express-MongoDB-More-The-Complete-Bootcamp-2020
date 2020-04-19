@@ -28,6 +28,8 @@ var userRouter = require('./routes/userRoutes');
 
 var reviewRouter = require('./routes/reviewRoutes');
 
+var bookingRouter = require('./routes/bookingRoutes');
+
 var viewRouter = require('./routes/viewRoutes');
 
 var app = express();
@@ -80,6 +82,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 app.all('*', function (req, res, next) {
   next(new AppError("Can't find ".concat(req.originalUrl, " on this server!"), 404));
 });
