@@ -1,0 +1,35 @@
+{
+    "workbench.colorTheme": "Oceanic Next",
+    "editor.minimap.enabled": true,
+    "workbench.statusBar.visible": true,
+    "workbench.activityBar.visible": true,
+    "editor.formatOnSave": false,
+
+    "workbench.colorCustomizations": {
+        "statusBar.noFolderBackground": "#333333",
+        "statusBar.debuggingBackground": "#263238",
+        "activityBar.background": "#4d4d4d",
+        "activityBar.activeBackground": "#4d4d4d",
+        "activityBar.activeBorder": "#308f30",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#308f30",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "titleBar.activeBackground": "#333333",
+        "titleBar.inactiveBackground": "#33333399",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveForeground": "#e7e7e799",
+        "statusBar.background": "#333333",
+        "statusBarItem.hoverBackground": "#4d4d4d",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBar.border": "#333333",
+        "titleBar.border": "#333333"
+    },
+    "editor.fontSize": 16,
+
+    "css.validate": false,
+    "scss.validate": false,
+    "less.validate": false,
+    "editor.wordWrap": "on",
+    "peacock.color": "#333333"
+}
