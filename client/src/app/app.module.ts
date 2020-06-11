@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {RouterModule} from "@angular/router";
 import {FormsModule} from '@angular/forms'
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from "./app-routing.module";
 
@@ -12,6 +12,8 @@ import {TasksComponent} from './components/tasks/tasks.component';
 import {TaskscsvComponent} from './components/taskscsv/taskscsv.component';
 
 import {AuthGuard} from "./auth.guard";
+import {UcwordsPipe} from './pipes/ucwords.pipe';
+import {TokenInterceptorService} from "./services/token-interceptor.service";
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import {AuthGuard} from "./auth.guard";
     SignupComponent,
     SigninComponent,
     TasksComponent,
-    TaskscsvComponent
+    TaskscsvComponent,
+    UcwordsPipe
   ],
   imports: [
     BrowserModule,
@@ -29,7 +32,12 @@ import {AuthGuard} from "./auth.guard";
     HttpClientModule
   ],
   providers: [
-    AuthGuard
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

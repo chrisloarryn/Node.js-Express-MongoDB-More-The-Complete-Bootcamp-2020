@@ -1,8 +1,13 @@
+require('dotenv').config({ path: './db/' })
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
 require('./database');
+
+
+console.log(process.env.MYSQL_URI)
 
 // settings
 app.set('port', process.env.PORT || 5000)

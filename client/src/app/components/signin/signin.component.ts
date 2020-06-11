@@ -31,9 +31,12 @@ export class SigninComponent implements OnInit {
     this.authService.signIn(this.user)
       .subscribe(
         res => {
-          this.smessage = !!(res && res.token);
+          // localStorage.setItem('token', res.token);
+          this.authService.tokenJwt.next(res.token);
+
           const details = {...this.user, token: res.token};
           localStorage.setItem('userDetails', JSON.stringify(details))
+          this.smessage = !!(res && res.token);
           this.router.navigate(['/private']);
         },
         err => {
