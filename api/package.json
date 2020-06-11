@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js",
+    "start": "cross-env NODE_ENV=development nodemon server.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
     "import": "node dev-data/data/import-dev-data.js --import",
     "delete": "node dev-data/data/import-dev-data.js --delete",
@@ -32,6 +32,7 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
